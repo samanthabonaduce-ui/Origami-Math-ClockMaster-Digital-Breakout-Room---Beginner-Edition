@@ -58,13 +58,13 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-amber-800">
-            <span>⭐</span> Grade 3 Math Mission &bull; Beginner Edition
+            <span>⭐</span> Grade 3 Math Mission
           </div>
           <h2 class="mt-1 text-lg sm:text-2xl font-black text-slate-800">
             Unlock the 12 Magical Origami Animals!
           </h2>
           <p class="mt-1 text-xs sm:text-sm font-medium text-slate-600 leading-relaxed max-w-2xl">
-            Click any hour on the clock dial below to open that origami animal's section. Solve the addition or subtraction story problem to unlock that hour. When all 12 hours are unlocked, you'll win the <strong>Master Origami Clockmaker Award</strong>!
+            Click any hour on the clock dial below to open that origami animal's section. Solve the addition, subtraction, multiplication, or division story problem to unlock that hour. When all 12 hours are unlocked, you'll win the <strong>Master Origami Clockmaker Award</strong>!
           </p>
         </div>
 
@@ -442,7 +442,7 @@
       document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
     }
 
-    // 12 Origami Hours Data (Beginner Edition - Addition & Subtraction Only)
+    // 12 Origami Hours Data
     const ORIGAMI_HOURS = [
       {
         hour: 1, timeString: "1:00", animalName: "Origami Bunny", characterName: "Barnaby the Bunny",
@@ -901,10 +901,10 @@
       doc.setTextColor(120, 53, 15);
       doc.text('CERTIFICATE OF ACHIEVEMENT', width / 2, 28, { align: 'center' });
 
-      // Subheading: Beginner Edition
+      // Subheading Shortened per user request
       doc.setFontSize(14);
       doc.setTextColor(180, 83, 9);
-      doc.text('Origami Math Clock Master • Beginner Edition', width / 2, 36, { align: 'center' });
+      doc.text('Origami Math Clock Master', width / 2, 36, { align: 'center' });
 
       // Recipient Presentation
       doc.setFont('helvetica', 'normal');
