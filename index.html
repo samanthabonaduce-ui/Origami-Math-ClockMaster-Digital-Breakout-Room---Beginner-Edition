@@ -1,0 +1,255 @@
+import { ORIGAMI_SVG_STRINGS } from './utils/origamiSvgData';
+
+export interface OrigamiHour {
+  hour: number; // 1 to 12
+  timeString: string; // "1:00", "2:00", etc.
+  animalName: string;
+  characterName: string;
+  themeColor: string; // primary origami paper color
+  accentColor: string;
+  mathSkill: string; // e.g. "Addition (+)"
+  story: string;
+  mathQuestion: string;
+  correctAnswer: number;
+  funFact: string;
+  foldingHint: string;
+  svgType: string;
+  svgContent: string;
+}
+
+const RAW_HOURS: Omit<OrigamiHour, 'svgContent'>[] = [
+  {
+    hour: 1,
+    timeString: '1:00',
+    animalName: 'Origami Bunny',
+    characterName: 'Barnaby the Bunny',
+    themeColor: '#f472b6', // soft pink
+    accentColor: '#ec4899',
+    mathSkill: 'Addition (+)',
+    story:
+      'Barnaby the origami bunny is preparing snacks for his hopping meadow picnic! In the sunny morning, he folded 24 tiny paper carrots. In the afternoon, he folded 38 more paper carrots to share with his best friends.',
+    mathQuestion:
+      'How many paper carrots did Barnaby fold in all for the picnic?',
+    correctAnswer: 62,
+    funFact:
+      'Real bunnies can jump up to 3 feet high in the air, and in traditional Japanese origami, bunnies are known as Usagi and symbolize good luck and clever thinking!',
+    foldingHint:
+      'Add the tens first (20 + 30 = 50), then add the ones (4 + 8 = 12), and combine them: 50 + 12 = 62!',
+    svgType: 'bunny',
+  },
+  {
+    hour: 2,
+    timeString: '2:00',
+    animalName: 'Origami Crane',
+    characterName: 'Kira the Peace Crane',
+    themeColor: '#ef4444', // vibrant red
+    accentColor: '#b91c1c',
+    mathSkill: 'Addition (+)',
+    story:
+      'Kira the elegant paper crane is crafting colorful garlands to hang in the school garden. In the morning, she folded 35 silver paper cranes. In the afternoon, she folded 29 golden paper cranes to complete the garland.',
+    mathQuestion:
+      'How many paper cranes did Kira fold altogether for the school garden garland?',
+    correctAnswer: 64,
+    funFact:
+      'In Japanese tradition (Senbazuru), folding 1,000 origami cranes is said to grant one special wish of health, happiness, and peace!',
+    foldingHint:
+      'Add 35 + 29. Try adding 35 + 30 = 65, then subtract 1 to get 64!',
+    svgType: 'crane',
+  },
+  {
+    hour: 3,
+    timeString: '3:00',
+    animalName: 'Origami Jumping Frog',
+    characterName: 'Jumpy the Frog',
+    themeColor: '#22c55e', // vivid green
+    accentColor: '#15803d',
+    mathSkill: 'Subtraction (−)',
+    story:
+      'Jumpy is a bouncy paper frog hopping along a 54-lily-pad trail across the peaceful pond. Jumpy has already hopped across 28 lily pads toward his cozy log home.',
+    mathQuestion:
+      'How many lily pads does Jumpy have left to hop to reach his cozy log home?',
+    correctAnswer: 26,
+    funFact:
+      'Origami jumping frogs have a special spring-fold on their backs! When you lightly press and slide your finger off the fold, air pressure and paper tension make them leap into the air!',
+    foldingHint:
+      'Subtract the hopped lily pads from the total: 54 − 28 = 26!',
+    svgType: 'frog',
+  },
+  {
+    hour: 4,
+    timeString: '4:00',
+    animalName: 'Origami Fox',
+    characterName: 'Rusty the Clever Fox',
+    themeColor: '#f97316', // bright orange
+    accentColor: '#c2410c',
+    mathSkill: 'Addition (+)',
+    story:
+      'Rusty the woodland origami fox is getting ready for a cozy autumn celebration. He collected 47 golden acorns and 36 red maple leaves to decorate his paper tree den.',
+    mathQuestion:
+      'How many forest treasures (acorns and leaves) did Rusty collect in total?',
+    correctAnswer: 83,
+    funFact:
+      'In folklore, the origami fox (Kitsune) is known for being extremely clever and wise. Its triangular folded ears help it listen for sounds miles away in the paper forest!',
+    foldingHint:
+      'Add the acorns and leaves together: 47 + 36 = 83!',
+    svgType: 'fox',
+  },
+  {
+    hour: 5,
+    timeString: '5:00',
+    animalName: 'Origami Butterfly',
+    characterName: 'Bella the Fluttering Butterfly',
+    themeColor: '#a855f7', // purple / violet
+    accentColor: '#7e22ce',
+    mathSkill: 'Subtraction (−)',
+    story:
+      'Bella the delicate origami butterfly flew across a sunny garden filled with 85 freshly bloomed flowers. So far today, she has already visited and sprinkled sparkling pollen on 37 flowers.',
+    mathQuestion:
+      'How many flowers does Bella have left to visit in the garden?',
+    correctAnswer: 48,
+    funFact:
+      'Origami butterflies (Chocho) are one of the oldest recorded origami designs in history! In ancient Japan, pairs of paper butterflies were used at weddings to symbolize two hearts fluttering together.',
+    foldingHint:
+      'Subtract the visited flowers from the total: 85 − 37 = 48!',
+    svgType: 'butterfly',
+  },
+  {
+    hour: 6,
+    timeString: '6:00',
+    animalName: 'Origami Sea Turtle',
+    characterName: 'Shelly the Sea Turtle',
+    themeColor: '#14b8a6', // teal / aqua
+    accentColor: '#0f766e',
+    mathSkill: 'Subtraction (−)',
+    story:
+      'Shelly the origami sea turtle was swimming along the coral reef with 64 shiny sea glass gems in her pouch. She shared 27 gems with her sea turtle friends to decorate their shell nests.',
+    mathQuestion:
+      'How many shiny sea glass gems does Shelly have left in her pouch?',
+    correctAnswer: 37,
+    funFact:
+      'Sea turtles have lived on Earth for more than 100 million years! In origami, folding a turtle shell requires precise accordion pleats to mimic the geometric plates of the carapace.',
+    foldingHint:
+      'Subtract the shared gems from the original collection: 64 − 27 = 37!',
+    svgType: 'turtle',
+  },
+  {
+    hour: 7,
+    timeString: '7:00',
+    animalName: 'Origami Puppy',
+    characterName: 'Pip the Playful Pup',
+    themeColor: '#eab308', // warm yellow / golden
+    accentColor: '#a16207',
+    mathSkill: 'Two-Step (+ and −)',
+    story:
+      'Pip the origami puppy had 72 colorful paper chew bones in his yard. He hid 28 bones beneath the grass. Later that afternoon, his puppy pal gave him 15 brand-new squeaky paper bones.',
+    mathQuestion:
+      'How many paper bones does Pip have in his yard now?',
+    correctAnswer: 59,
+    funFact:
+      'The origami puppy face is one of the very first models beginners learn! By folding down the top two corners of a paper triangle, you magically create floppy puppy ears in seconds.',
+    foldingHint:
+      'First subtract what he hid: 72 − 28 = 44. Then add the new bones: 44 + 15 = 59!',
+    svgType: 'puppy',
+  },
+  {
+    hour: 8,
+    timeString: '8:00',
+    animalName: 'Origami Wise Owl',
+    characterName: 'Professor Hoot',
+    themeColor: '#6366f1', // indigo / starry blue
+    accentColor: '#4338ca',
+    mathSkill: 'Addition (+)',
+    story:
+      'Professor Hoot the origami owl loves stargazing from his tall pine tree perch. Tonight, he counted 48 twinkling stars in the northern sky and 37 shimmering stars in the southern sky.',
+    mathQuestion:
+      'How many stars did Professor Hoot count in total in the night sky?',
+    correctAnswer: 85,
+    funFact:
+      'Origami owls symbolize wisdom and watchful guidance! Owls can rotate their necks up to 270 degrees because they have 14 neck vertebrae—twice as many as humans!',
+    foldingHint:
+      'Add the north and south stars together: 48 + 37 = 85!',
+    svgType: 'owl',
+  },
+  {
+    hour: 9,
+    timeString: '9:00',
+    animalName: 'Origami Koi Fish',
+    characterName: 'Finn the Lucky Koi',
+    themeColor: '#f97316', // orange / koi red
+    accentColor: '#ea580c',
+    mathSkill: 'Subtraction (−)',
+    story:
+      'Finn the shimmering koi fish is swimming in a serene water garden with 76 colorful origami koi fish. At sunset, 39 of the koi swam down to rest among the cool water reeds.',
+    mathQuestion:
+      'How many origami koi fish were still swimming near the pond surface?',
+    correctAnswer: 37,
+    funFact:
+      'Koi fish are famous for their persistence and strength swimming upstream. In Japanese legends, a koi that leaped over a dragon waterfall would transform into a mighty golden dragon!',
+    foldingHint:
+      'Subtract the resting koi from the total: 76 − 39 = 37!',
+    svgType: 'koi',
+  },
+  {
+    hour: 10,
+    timeString: '10:00',
+    animalName: 'Origami Elephant',
+    characterName: 'Ella the Gentle Giant',
+    themeColor: '#64748b', // slate blue / elephant gray
+    accentColor: '#334155',
+    mathSkill: '3-Digit Addition (+)',
+    story:
+      'Ella the origami elephant is helping fill water troughs for the jungle sanctuary. On her first morning trip, she carried 145 liters of cool water. On her second afternoon trip, she carried 138 liters of water.',
+    mathQuestion:
+      'How many liters of water did Ella carry in total across both trips?',
+    correctAnswer: 283,
+    funFact:
+      'An elephant’s trunk contains over 40,000 individual muscles! In origami, folding an elephant’s trunk and wide fan ears requires precise reverse folds.',
+    foldingHint:
+      'Line up your digits: 145 + 138. Start with ones (5+8=13), regroup to tens (1+4+3=8), then hundreds (1+1=2)!',
+    svgType: 'elephant',
+  },
+  {
+    hour: 11,
+    timeString: '11:00',
+    animalName: 'Origami Kitten',
+    characterName: 'Mochi the Curious Cat',
+    themeColor: '#fb923c', // warm coral
+    accentColor: '#ea580c',
+    mathSkill: 'Addition (+)',
+    story:
+      'Mochi the origami kitten discovered a playful craft room! In the big closet, there were 58 soft red yarn balls. On the rug, there were 36 soft blue yarn balls.',
+    mathQuestion:
+      'How many soft yarn balls does Mochi have to play with in total?',
+    correctAnswer: 94,
+    funFact:
+      'Cats have remarkable balance, and origami cat designs use clever center-creases so the folded paper cat can actually stand upright on its four tiny paper paws!',
+    foldingHint:
+      'Add the red and blue yarn balls together: 58 + 36 = 94!',
+    svgType: 'cat',
+  },
+  {
+    hour: 12,
+    timeString: '12:00',
+    animalName: 'Origami Golden Dragon',
+    characterName: 'Ignis the Grand Dragon',
+    themeColor: '#d97706', // gold / amber
+    accentColor: '#b45309',
+    mathSkill: 'Two-Step Finale (+ and −)',
+    story:
+      'Ignis the majestic origami dragon is putting on the grand clock tower finale show! He started with 95 glowing paper festival lanterns. First, he released 38 lanterns into the night sky. Then, he released 29 more lanterns for the midnight fireworks display.',
+    mathQuestion:
+      'How many glowing paper lanterns does Ignis have left to light for the final stroke of midnight?',
+    correctAnswer: 28,
+    funFact:
+      'The origami dragon is one of the most famous master-level origami folds in the world, featuring faceted horns, pleated wings, and serrated paper claws!',
+    foldingHint:
+      'Step 1: Add the lanterns he already released (38 + 29 = 67). Step 2: Subtract from 95: 95 − 67 = 28!',
+    svgType: 'dragon',
+  },
+];
+
+export const ORIGAMI_HOURS: OrigamiHour[] = RAW_HOURS.map((h) => ({
+  ...h,
+  svgContent: ORIGAMI_SVG_STRINGS[h.svgType] || '',
+}));
+
