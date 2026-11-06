@@ -3,578 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Origami Animal Clock - Beginner Edition Math Breakout</title>
+  <title>Origami Animal Clock - 3rd Grade Math Digital Breakout</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    /* =========================================================
-       COMPLETE SELF-CONTAINED STYLESHEET
-       Zero-dependency: Guaranteed to render correctly on GitHub Pages,
-       offline, or behind school firewalls even if CDN scripts are blocked.
-       ========================================================= */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    body {
-      min-height: 100vh;
-      background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 45%, #fed7aa 100%);
-      background-attachment: fixed;
-      color: #1e293b;
-      padding-bottom: 4rem;
-      -webkit-font-smoothing: antialiased;
-      user-select: none;
-    }
-
-    /* Core Visibility & Positioning */
-    .hidden { display: none !important; }
-    .block { display: block !important; }
-    .flex { display: flex !important; }
-    .inline-flex { display: inline-flex !important; }
-    .relative { position: relative !important; }
-    .absolute { position: absolute !important; }
-    .fixed { position: fixed !important; }
-    .sticky { position: sticky !important; }
-    .inset-0 { top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; }
-    .z-10 { z-index: 10 !important; }
-    .z-20 { z-index: 20 !important; }
-    .z-40 { z-index: 40 !important; }
-    .z-50 { z-index: 50 !important; }
-    .w-full { width: 100% !important; }
-    .h-full { height: 100% !important; }
-    .mx-auto { margin-left: auto !important; margin-right: auto !important; }
-    .text-center { text-align: center !important; }
-    .select-none { user-select: none !important; }
-    .pointer-events-none { pointer-events: none !important; }
-
-    /* Header Bar */
-    header.app-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      border-bottom: 1px solid rgba(251, 191, 36, 0.7);
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    .header-inner {
-      max-width: 72rem;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-    }
-    @media (min-width: 640px) {
-      .header-inner { padding: 0.75rem 1.5rem; }
-    }
-    .brand-icon {
-      display: flex;
-      height: 2.75rem;
-      width: 2.75rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 1rem;
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      font-size: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
-      border: 2px solid #fde68a;
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .icon-btn {
-      display: flex;
-      height: 2.35rem;
-      width: 2.35rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0.75rem;
-      border: 1px solid #fcd34d;
-      background: #ffffff;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      transition: background-color 0.15s;
-    }
-    .icon-btn:hover { background: #fffbeb; }
-    .reset-btn {
-      border-radius: 0.75rem;
-      border: 1px solid #fcd34d;
-      background: #ffffff;
-      padding: 0.4rem 0.85rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #92400e;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      transition: all 0.15s;
-    }
-    .reset-btn:hover {
-      background: #fff1f2;
-      color: #be123c;
-      border-color: #fecdd3;
-    }
-    .progress-track {
-      height: 0.5rem;
-      width: 100%;
-      background: #fef3c7;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #f59e0b, #10b981, #059669);
-      transition: width 0.5s ease-out;
-      width: 0%;
-    }
-
-    /* Main Container & Mission Card */
-    main.main-container {
-      max-width: 64rem;
-      margin: 0 auto;
-      padding: 1.5rem 1rem 3rem;
-    }
-    @media (min-width: 640px) {
-      main.main-container { padding: 2rem 1.5rem 4rem; }
-    }
-    .intro-card {
-      margin-bottom: 1.5rem;
-      border-radius: 1.5rem;
-      border: 2px solid rgba(251, 191, 36, 0.8);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 1.25rem 1.5rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-    }
-    .badge-edition {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      border-radius: 9999px;
-      background: #fef3c7;
-      padding: 0.2rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #92400e;
-    }
-    .counter-box {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      border-radius: 1rem;
-      border: 2px solid #fcd34d;
-      background: linear-gradient(135deg, #fffbeb, #fef3c7);
-      padding: 0.6rem 1rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      flex-shrink: 0;
-    }
-
-    /* Circular Origami Clock Centerpiece */
-    .clock-stage {
-      position: relative;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0.5rem 0 1.5rem;
-    }
-    .clock-dial-wrap {
-      position: relative;
-      width: 340px;
-      height: 340px;
-      user-select: none;
-      margin: 0 auto;
-    }
-    @media (min-width: 640px) {
-      .clock-dial-wrap { width: 460px; height: 460px; }
-    }
-    @media (min-width: 768px) {
-      .clock-dial-wrap { width: 540px; height: 540px; }
-    }
-    .clock-bezel {
-      position: absolute;
-      inset: 0;
-      border-radius: 9999px;
-      border: 10px solid rgba(217, 119, 6, 0.3);
-      background: radial-gradient(circle, #fffbeb 0%, #fef3c7 70%, #fef9c3 100%);
-      box-shadow: 0 15px 40px rgba(217, 119, 6, 0.18);
-    }
-    @media (min-width: 640px) {
-      .clock-bezel { border-width: 14px; }
-    }
-    .clock-hands-overlay {
-      pointer-events: none;
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #hour-hand {
-      position: absolute;
-      height: 30%;
-      width: 8px;
-      bottom: 50%;
-      transform-origin: bottom center;
-      transition: transform 0.5s ease-out;
-    }
-    #hour-hand > div {
-      height: 100%;
-      width: 100%;
-      border-top-left-radius: 9999px;
-      border-top-right-radius: 9999px;
-      background: linear-gradient(to top, #78350f, #b45309);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-    }
-    #minute-hand {
-      position: absolute;
-      height: 42%;
-      width: 4px;
-      bottom: 50%;
-      transform-origin: bottom center;
-      transition: transform 0.5s ease-out;
-    }
-    #minute-hand > div {
-      height: 100%;
-      width: 100%;
-      border-top-left-radius: 9999px;
-      border-top-right-radius: 9999px;
-      background: linear-gradient(to top, #92400e, #d97706);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-    .clock-hub {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      height: 3.5rem;
-      width: 3.5rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      border: 4px solid #b45309;
-      background: linear-gradient(135deg, #f59e0b, #fbbf24, #fef08a);
-      box-shadow: 0 4px 10px rgba(120, 53, 15, 0.3);
-    }
-    @media (min-width: 640px) {
-      .clock-hub { height: 4.5rem; width: 4.5rem; }
-    }
-    .clock-hub-pin {
-      height: 1rem;
-      width: 1rem;
-      border-radius: 9999px;
-      background: #78350f;
-    }
-
-    /* 12 Hour Animal Buttons */
-    .clock-node {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      z-index: 20;
-    }
-    .hour-btn {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 1rem;
-      padding: 0.25rem 0.35rem;
-      cursor: pointer;
-      border: none;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
-      outline: none;
-    }
-    .hour-btn.locked {
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: 0 0 0 2px #fde68a, 0 4px 8px rgba(217, 119, 6, 0.15);
-    }
-    .hour-btn.locked:hover {
-      background: #ffffff;
-      box-shadow: 0 0 0 3px #f59e0b, 0 8px 16px rgba(217, 119, 6, 0.25);
-      transform: scale(1.08);
-    }
-    .hour-btn.unlocked {
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 0 0 4px #34d399, 0 6px 12px rgba(16, 185, 129, 0.25);
-    }
-    .hour-btn.unlocked:hover {
-      transform: scale(1.12);
-      box-shadow: 0 0 0 4px #10b981, 0 10px 20px rgba(16, 185, 129, 0.35);
-    }
-    .hour-badge-time {
-      position: absolute;
-      top: -9px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 9999px;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 900;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      white-space: nowrap;
-    }
-    .hour-badge-status {
-      position: absolute;
-      bottom: -9px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 9999px;
-      padding: 1px 7px;
-      font-size: 9px;
-      font-weight: 700;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      white-space: nowrap;
-    }
-
-    /* Modal Dialogs */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(4px);
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    .modal-dialog-card {
-      position: relative;
-      width: 100%;
-      max-width: 42rem;
-      border-radius: 1.5rem;
-      border: 4px solid #fcd34d;
-      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%, #fffbeb 100%);
-      padding: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
-    }
-    @media (min-width: 640px) {
-      .modal-dialog-card { padding: 2rem; }
-    }
-    .modal-close-btn {
-      display: flex;
-      height: 2.25rem;
-      width: 2.25rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      background: #f1f5f9;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #475569;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .modal-close-btn:hover { background: #ffe4e6; color: #e11d48; }
-    .preview-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 1rem;
-      border: 2px solid #fde68a;
-      background: linear-gradient(180deg, rgba(254, 243, 199, 0.5), #ffffff);
-      padding: 1rem;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
-    }
-    .story-card {
-      border-radius: 1rem;
-      border: 1px solid #fde68a;
-      background: rgba(254, 243, 199, 0.6);
-      padding: 1rem;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #334155;
-    }
-    .challenge-card {
-      border-radius: 1rem;
-      border: 2px solid #f59e0b;
-      background: #ffffff;
-      padding: 1rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .num-input {
-      width: 100%;
-      border-radius: 1rem;
-      border: 2px solid #cbd5e1;
-      background: #ffffff;
-      padding: 0.75rem 1rem;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #0f172a;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .num-input:focus {
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 4px #fde68a;
-    }
-    .unlock-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      border-radius: 1rem;
-      background: linear-gradient(90deg, #f59e0b, #d97706);
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      font-weight: 900;
-      color: #ffffff;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3);
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
-    .unlock-btn:hover {
-      background: linear-gradient(90deg, #d97706, #b45309);
-      transform: translateY(-1px);
-    }
-    .error-box {
-      border-radius: 0.75rem;
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      padding: 0.65rem;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #be123c;
-    }
-    .solved-box {
-      border-radius: 1rem;
-      border: 2px solid #34d399;
-      background: #ecfdf5;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    /* Celebration & Certificate Award */
-    .celebration-card {
-      position: relative;
-      width: 100%;
-      max-width: 48rem;
-      border-radius: 1.75rem;
-      border: 4px solid #f59e0b;
-      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 50%, #fef3c7 100%);
-      padding: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-    @media (min-width: 640px) {
-      .celebration-card { padding: 2.5rem; }
-    }
-    .trophy-badge {
-      margin: 0 auto;
-      display: flex;
-      height: 4.5rem;
-      width: 4.5rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      font-size: 2.25rem;
-      box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
-      border: 4px solid #fef3c7;
-    }
-    .cert-name-input {
-      margin-top: 0.35rem;
-      width: 100%;
-      border-radius: 1rem;
-      border: 2px solid #fcd34d;
-      background: #ffffff;
-      padding: 0.6rem 1rem;
-      text-align: center;
-      font-size: 1.15rem;
-      font-weight: 900;
-      color: #78350f;
-      outline: none;
-    }
-    .cert-name-input:focus {
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 3px #fde68a;
-    }
-    .action-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      border-radius: 1rem;
-      padding: 0.75rem 1.25rem;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: all 0.15s;
-    }
-    .action-btn-gold {
-      background: linear-gradient(90deg, #f59e0b, #d97706);
-      color: #ffffff;
-    }
-    .action-btn-gold:hover {
-      background: linear-gradient(90deg, #d97706, #b45309);
-      transform: translateY(-1px);
-    }
-    .action-btn-green {
-      background: #059669;
-      color: #ffffff;
-    }
-    .action-btn-green:hover {
-      background: #047857;
-      transform: translateY(-1px);
-    }
-    .action-btn-outline {
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
-      color: #334155;
-    }
-    .action-btn-outline:hover { background: #f8fafc; }
-    .action-btn-red {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      color: #be123c;
-    }
-    .action-btn-red:hover { background: #ffe4e6; }
-
-    /* Print View for Browser Printing */
-    @media print {
-      body * { visibility: hidden !important; }
-      #print-certificate-container, #print-certificate-container * {
-        visibility: visible !important;
-      }
-      #print-certificate-container {
-        display: block !important;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 15mm;
-        background: #fffdf5 !important;
-        box-sizing: border-box;
-      }
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(8deg); }
+    }
+    .animate-float {
+      animation: floatParticle 3s ease-in-out infinite;
     }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-[#fffbeb] via-[#fef3c7]/60 to-[#fed7aa]/40 text-slate-800 font-sans pb-16 antialiased select-none">
 
   <!-- Header -->
-  <header class="app-header sticky top-0 z-40 border-b border-amber-200/80 bg-white/95 backdrop-blur-md shadow-xs">
-    <div class="header-inner mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+  <header class="sticky top-0 z-40 border-b border-amber-200/80 bg-white/95 backdrop-blur-md shadow-xs">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
       <div class="flex items-center gap-3">
-        <span class="brand-icon flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-xl sm:text-2xl shadow-md ring-2 ring-amber-300">
+        <span class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-xl sm:text-2xl shadow-md ring-2 ring-amber-300">
           🕒
         </span>
         <div>
@@ -587,29 +35,29 @@
         </div>
       </div>
 
-      <div class="header-actions flex items-center gap-2 sm:gap-3">
-        <button id="sound-btn" onclick="toggleSound()" class="icon-btn flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-amber-300 bg-white text-base shadow-xs hover:bg-amber-50" title="Toggle Sound">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="sound-btn" onclick="toggleSound()" class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-amber-300 bg-white text-base shadow-xs hover:bg-amber-50">
           🔊
         </button>
-        <button onclick="resetBreakout()" class="reset-btn rounded-xl border border-amber-300 bg-white px-3 py-1.5 text-xs font-bold text-amber-800 shadow-xs hover:bg-rose-50 hover:text-rose-700 transition-colors">
+        <button onclick="resetBreakout()" class="rounded-xl border border-amber-300 bg-white px-3 py-1.5 text-xs font-bold text-amber-800 shadow-xs hover:bg-rose-50 hover:text-rose-700 transition-colors">
           Reset
         </button>
       </div>
     </div>
 
     <!-- Progress bar -->
-    <div class="progress-track h-2 w-full bg-amber-100 overflow-hidden">
-      <div id="progress-bar" class="progress-fill h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+    <div class="h-2 w-full bg-amber-100 overflow-hidden">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 transition-all duration-500 ease-out" style="width: 0%"></div>
     </div>
   </header>
 
   <!-- Main Container -->
-  <main class="main-container mx-auto max-w-5xl px-4 pt-6 sm:pt-8 sm:px-6">
+  <main class="mx-auto max-w-5xl px-4 pt-6 sm:pt-8 sm:px-6">
     <!-- Intro Card -->
-    <div class="intro-card mb-6 rounded-3xl border-2 border-amber-300/80 bg-white/95 p-4 sm:p-6 shadow-sm">
+    <div class="mb-6 rounded-3xl border-2 border-amber-300/80 bg-white/95 p-4 sm:p-6 shadow-sm">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div class="badge-edition inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-amber-800">
+          <div class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-amber-800">
             <span>⭐</span> Grade 3 Math Mission &bull; Beginner Edition
           </div>
           <h2 class="mt-1 text-lg sm:text-2xl font-black text-slate-800">
@@ -620,7 +68,7 @@
           </p>
         </div>
 
-        <div class="counter-box flex shrink-0 items-center gap-2 rounded-2xl border-2 border-amber-300 bg-gradient-to-tr from-amber-50 to-amber-100/80 px-4 py-3 shadow-xs">
+        <div class="flex shrink-0 items-center gap-2 rounded-2xl border-2 border-amber-300 bg-gradient-to-tr from-amber-50 to-amber-100/80 px-4 py-3 shadow-xs">
           <span class="text-2xl sm:text-3xl">⭐</span>
           <div>
             <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800">
@@ -635,24 +83,24 @@
     </div>
 
     <!-- The Clock Face Centerpiece -->
-    <div class="clock-stage relative mx-auto flex flex-col items-center py-2">
-      <div id="clock-dial-face" class="clock-dial-wrap relative h-[340px] w-[340px] sm:h-[460px] sm:w-[460px] md:h-[540px] md:w-[540px] select-none">
+    <div class="relative mx-auto flex flex-col items-center py-2">
+      <div class="relative h-[340px] w-[340px] sm:h-[460px] sm:w-[460px] md:h-[540px] md:w-[540px] select-none">
         <!-- Bezel -->
-        <div class="clock-bezel absolute inset-0 rounded-full border-[10px] sm:border-[14px] border-[#d97706]/30 bg-gradient-to-b from-[#fffbeb] via-[#fef3c7] to-[#fef9c3] shadow-[0_15px_40px_rgba(217,119,6,0.18)]">
+        <div class="absolute inset-0 rounded-full border-[10px] sm:border-[14px] border-[#d97706]/30 bg-gradient-to-b from-[#fffbeb] via-[#fef3c7] to-[#fef9c3] shadow-[0_15px_40px_rgba(217,119,6,0.18)]">
           <!-- Dial SVG Background -->
           <svg class="absolute inset-0 h-full w-full pointer-events-none" viewBox="0 0 540 540" id="dial-svg"></svg>
         </div>
 
         <!-- Clock Hands -->
-        <div class="clock-hands-overlay pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div id="hour-hand" class="absolute origin-bottom transition-transform duration-500 ease-out" style="height: 30%; width: 8px; bottom: 50%; transform: rotate(0deg)">
             <div class="h-full w-full rounded-t-full bg-gradient-to-t from-[#78350f] to-[#b45309] shadow-md"></div>
           </div>
           <div id="minute-hand" class="absolute origin-bottom transition-transform duration-500 ease-out" style="height: 42%; width: 4px; bottom: 50%; transform: rotate(0deg)">
             <div class="h-full w-full rounded-t-full bg-gradient-to-t from-[#92400e] to-[#d97706] shadow-sm"></div>
           </div>
-          <div class="clock-hub relative z-10 flex h-14 w-14 sm:h-20 sm:w-20 items-center justify-center rounded-full border-4 border-[#b45309] bg-gradient-to-tr from-[#f59e0b] via-[#fbbf24] to-[#fef08a] shadow-lg">
-            <div class="clock-hub-pin h-4 w-4 rounded-full bg-[#78350f]"></div>
+          <div class="relative z-10 flex h-14 w-14 sm:h-20 sm:w-20 items-center justify-center rounded-full border-4 border-[#b45309] bg-gradient-to-tr from-[#f59e0b] via-[#fbbf24] to-[#fef08a] shadow-lg">
+            <div class="h-4 w-4 rounded-full bg-[#78350f]"></div>
           </div>
         </div>
 
@@ -662,13 +110,13 @@
     </div>
   </main>
 
-  <!-- Modal for Hour Math Puzzle (Protected with inline display:none) -->
-  <div id="hour-modal" class="modal-backdrop fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" style="display: none;">
-    <div class="modal-dialog-card relative w-full max-w-2xl rounded-3xl border-4 border-amber-300 bg-gradient-to-b from-amber-50 via-white to-amber-50/80 p-6 sm:p-8 shadow-2xl">
+  <!-- Modal for Hour Math Puzzle -->
+  <div id="hour-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
+    <div class="relative w-full max-w-2xl rounded-3xl border-4 border-amber-300 bg-gradient-to-b from-amber-50 via-white to-amber-50/80 p-6 sm:p-8 shadow-2xl">
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-amber-200/80 pb-4">
         <div class="flex items-center gap-3">
-          <span id="modal-hour-badge" class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-amber-500 font-black text-white text-lg sm:text-xl shadow-md ring-2 ring-amber-300" style="background:#f59e0b; color:#fff;">
+          <span id="modal-hour-badge" class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-amber-500 font-black text-white text-lg sm:text-xl shadow-md ring-2 ring-amber-300">
             1
           </span>
           <div>
@@ -676,65 +124,64 @@
             <h2 id="modal-character-name" class="text-xl sm:text-2xl font-black text-slate-800">Barnaby the Bunny</h2>
           </div>
         </div>
-        <button onclick="closeModal()" class="modal-close-btn flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-600 hover:bg-rose-100 hover:text-rose-600">✕</button>
+        <button onclick="closeModal()" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-600 hover:bg-rose-100 hover:text-rose-600">✕</button>
       </div>
 
       <!-- Body -->
-      <div class="mt-6 flex flex-col md:flex-row items-center gap-6" style="margin-top: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+      <div class="mt-6 flex flex-col md:flex-row items-center gap-6">
         <!-- Large Origami Animal -->
-        <div class="preview-box flex flex-col items-center justify-center rounded-2xl border-2 border-amber-200 bg-gradient-to-b from-amber-100/50 to-white p-4 shadow-inner md:w-5/12" style="flex: 1 1 200px;">
-          <div id="modal-animal-svg-large" style="width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;"></div>
-          <div class="mt-2 text-center" style="margin-top: 0.5rem; text-align: center;">
-            <span id="modal-animal-name" class="inline-block rounded-full bg-amber-200/80 px-3 py-1 text-xs font-bold text-amber-900" style="background:#fde68a; color:#78350f; padding: 4px 12px; border-radius: 9999px;">Origami Bunny</span>
-            <div id="modal-skill-badge" class="mt-1 text-[11px] font-semibold text-slate-500" style="margin-top: 4px; font-size: 11px; color: #64748b;">Skill: Addition (+)</div>
+        <div class="flex flex-col items-center justify-center rounded-2xl border-2 border-amber-200 bg-gradient-to-b from-amber-100/50 to-white p-4 shadow-inner md:w-5/12">
+          <div id="modal-animal-svg-large" class="h-[180px] w-[180px] flex items-center justify-center"></div>
+          <div class="mt-2 text-center">
+            <span id="modal-animal-name" class="inline-block rounded-full bg-amber-200/80 px-3 py-1 text-xs font-bold text-amber-900">Origami Bunny</span>
+            <div id="modal-skill-badge" class="mt-1 text-[11px] font-semibold text-slate-500">Skill: Addition (+)</div>
           </div>
         </div>
 
         <!-- Story & Question -->
-        <div class="flex-1 space-y-4" style="flex: 2 1 280px; display: flex; flex-direction: column; gap: 1rem;">
-          <div class="story-card rounded-2xl border border-amber-200 bg-amber-50/70 p-4 leading-relaxed text-slate-700 text-sm sm:text-base">
+        <div class="flex-1 space-y-4">
+          <div class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 leading-relaxed text-slate-700 text-sm sm:text-base">
             <p id="modal-story" class="font-medium"></p>
           </div>
 
-          <div class="challenge-card rounded-2xl border-2 border-amber-400 bg-white p-4 shadow-sm">
-            <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-amber-700" style="color: #b45309; font-weight: 800; font-size: 12px;">
+          <div class="rounded-2xl border-2 border-amber-400 bg-white p-4 shadow-sm">
+            <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-amber-700">
               <span>⭐</span> Math Challenge:
             </div>
-            <div id="modal-question" class="mt-1 text-base sm:text-lg font-bold text-slate-900 leading-snug" style="margin-top: 4px; font-weight: 700; color: #0f172a;"></div>
+            <div id="modal-question" class="mt-1 text-base sm:text-lg font-bold text-slate-900 leading-snug"></div>
           </div>
 
           <!-- Unlocked Form -->
           <div id="form-unsolved-area">
-            <form onsubmit="submitAnswer(event)" style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <form onsubmit="submitAnswer(event)" class="space-y-3">
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <input
                   type="number"
                   id="user-answer-input"
                   placeholder="Type number answer..."
-                  class="num-input w-full rounded-2xl border-2 border-slate-300 bg-white px-4 py-3 text-lg font-bold text-slate-900 shadow-inner focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-200"
-                  style="flex: 1;"
+                  class="w-full rounded-2xl border-2 border-slate-300 bg-white px-4 py-3 text-lg font-bold text-slate-900 shadow-inner focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-200"
                 />
                 <button
                   type="submit"
-                  class="unlock-btn flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600 hover:to-amber-700 active:scale-95 whitespace-nowrap"
+                  class="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600 hover:to-amber-700 active:scale-95 whitespace-nowrap"
                 >
                   <span>🔓</span> Unlock Hour!
                 </button>
               </div>
-              <div id="modal-error" class="error-box hidden rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-center text-xs font-bold text-rose-700" style="display: none;"></div>
+              <div id="modal-error" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-center text-xs font-bold text-rose-700"></div>
             </form>
           </div>
 
           <!-- Solved Area -->
-          <div id="form-solved-area" class="solved-box hidden rounded-2xl border-2 border-emerald-400 bg-emerald-50 p-4 text-center" style="display: none;">
-            <div class="text-2xl font-black text-emerald-800" style="font-size: 1.5rem; font-weight: 900; color: #065f46;">🎉 Hour Unlocked!</div>
-            <p id="modal-solved-answer" class="mt-1 text-sm font-semibold text-emerald-700" style="margin-top: 4px; font-weight: 600; color: #047857;"></p>
-            <div class="mt-3 rounded-xl bg-white/80 p-3 text-left text-xs text-slate-700 border border-emerald-200" style="margin-top: 0.75rem; background: rgba(255,255,255,0.85); border-radius: 0.75rem; padding: 0.75rem; border: 1px solid #a7f3d0; text-align: left;">
+          <div id="form-solved-area" class="hidden rounded-2xl border-2 border-emerald-400 bg-emerald-50 p-4 text-center">
+            <div class="text-2xl font-black text-emerald-800">🎉 Hour Unlocked!</div>
+            <p id="modal-solved-answer" class="mt-1 text-sm font-semibold text-emerald-700"></p>
+            <div class="mt-3 rounded-xl bg-white/80 p-3 text-left text-xs text-slate-700 border border-emerald-200">
               <strong>Origami Fact:</strong> <span id="modal-fun-fact"></span>
             </div>
-            <div class="mt-4 flex items-center justify-center gap-3" style="margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-              <span id="countdown-text" class="text-xs font-bold text-emerald-700" style="font-size: 12px; font-weight: 700; color: #047857;">Returning to clock in 2s...</span>
-              <button onclick="closeModal()" class="rounded-xl bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700" style="background:#059669; color:#fff; border:none; padding: 6px 16px; border-radius: 0.75rem; font-weight: 700; cursor: pointer;">
+            <div class="mt-4 flex items-center justify-center gap-3">
+              <span id="countdown-text" class="text-xs font-bold text-emerald-700">Returning to clock in 2s...</span>
+              <button onclick="closeModal()" class="rounded-xl bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
                 Back to Clock &rarr;
               </button>
             </div>
@@ -744,45 +191,45 @@
     </div>
   </div>
 
-  <!-- Grand Completion Modal (Protected with inline display:none) -->
-  <div id="celebration-modal" class="modal-backdrop fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm" style="display: none;">
-    <div class="celebration-card relative w-full max-w-3xl rounded-3xl border-4 border-amber-400 bg-gradient-to-b from-amber-50 via-white to-amber-100/90 p-6 sm:p-10 shadow-2xl text-center">
-      <div class="trophy-badge mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-3xl shadow-lg ring-4 ring-amber-200">
+  <!-- Grand Completion Modal -->
+  <div id="celebration-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
+    <div class="relative w-full max-w-3xl rounded-3xl border-4 border-amber-400 bg-gradient-to-b from-amber-50 via-white to-amber-100/90 p-6 sm:p-10 shadow-2xl text-center">
+      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-3xl shadow-lg ring-4 ring-amber-200">
         🏆
       </div>
-      <span class="mt-3 inline-block rounded-full bg-amber-200/90 px-4 py-1 text-xs font-black uppercase tracking-widest text-amber-900" style="margin-top: 0.75rem; display: inline-block; background: #fde68a; color: #78350f; padding: 4px 16px; border-radius: 9999px; font-weight: 900; font-size: 12px; text-transform: uppercase;">
+      <span class="mt-3 inline-block rounded-full bg-amber-200/90 px-4 py-1 text-xs font-black uppercase tracking-widest text-amber-900">
         Digital Breakout Completed!
       </span>
-      <h1 class="mt-2 text-2xl sm:text-4xl font-black text-slate-900" style="margin-top: 0.5rem; font-size: 2rem; font-weight: 900; color: #0f172a;">
+      <h1 class="mt-2 text-2xl sm:text-4xl font-black text-slate-900">
         MASTER ORIGAMI CLOCKMAKER!
       </h1>
-      <p class="mx-auto mt-2 max-w-lg text-sm sm:text-base font-medium text-slate-600" style="margin: 0.5rem auto 1rem; max-width: 32rem; color: #475569; font-weight: 500;">
+      <p class="mx-auto mt-2 max-w-lg text-sm sm:text-base font-medium text-slate-600">
         Congratulations! You solved all 12 math story challenges and unlocked every hour of the magical Origami Clock!
       </p>
 
-      <div class="mx-auto mt-4 max-w-md" style="margin: 1rem auto; max-width: 28rem;">
-        <label class="block text-xs font-bold uppercase tracking-wider text-amber-800" style="display: block; font-size: 12px; font-weight: 700; color: #92400e; text-transform: uppercase;">
+      <div class="mx-auto mt-4 max-w-md">
+        <label class="block text-xs font-bold uppercase tracking-wider text-amber-800">
           Personalize Your Award Certificate:
         </label>
         <input
           type="text"
           id="cert-name-input"
           placeholder="Enter Your Name..."
-          class="cert-name-input mt-1 w-full rounded-2xl border-2 border-amber-300 bg-white px-4 py-2 text-center text-lg font-black text-amber-950 shadow-inner focus:border-amber-500 focus:outline-none"
+          class="mt-1 w-full rounded-2xl border-2 border-amber-300 bg-white px-4 py-2 text-center text-lg font-black text-amber-950 shadow-inner focus:border-amber-500 focus:outline-none"
         />
       </div>
 
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3" style="margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;">
-        <button onclick="printPdfCertificate()" class="action-btn action-btn-gold flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600">
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <button onclick="printPdfCertificate()" class="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600">
           <span>🖨️</span> Print PDF Certificate
         </button>
-        <button onclick="downloadPdfCertificate()" class="action-btn action-btn-green flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 font-bold text-white shadow-md hover:bg-emerald-700">
+        <button onclick="downloadPdfCertificate()" class="flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 font-bold text-white shadow-md hover:bg-emerald-700">
           <span>📥</span> Save PDF
         </button>
-        <button onclick="closeCelebration()" class="action-btn action-btn-outline rounded-2xl border-2 border-slate-300 bg-white px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+        <button onclick="closeCelebration()" class="rounded-2xl border-2 border-slate-300 bg-white px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
           View Clock
         </button>
-        <button onclick="resetBreakout()" class="action-btn action-btn-red rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 font-bold text-rose-700 hover:bg-rose-100">
+        <button onclick="resetBreakout()" class="rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 font-bold text-rose-700 hover:bg-rose-100">
           ↺ Play Again
         </button>
       </div>
@@ -995,191 +442,6 @@
       document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
     }
 
-    // High-Fidelity Master Origami SVG Registry (Full geometry with inner folds, eyes, highlights, and crease marks)
-    const ORIGAMI_SVG_MAP = {
-      bunny: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="40,15 24,58 54,58" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="39,22 30,52 46,52" fill="#fbcfe8"/>
-        <polygon points="80,10 66,58 96,58" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="80,18 72,52 88,52" fill="#fbcfe8"/>
-        <polygon points="60,48 20,78 60,108" fill="#f9a8d4" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,48 100,78 60,108" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,48 60,108 60,84" fill="#ec4899"/>
-        <polygon points="20,78 8,92 34,98" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="100,78 112,92 86,98" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="60,82 53,90 67,90" fill="#be185d"/>
-        <circle cx="44" cy="72" r="4" fill="#1e1e1e"/>
-        <circle cx="76" cy="72" r="4" fill="#1e1e1e"/>
-        <circle cx="45.5" cy="70.5" r="1.5" fill="#ffffff"/>
-        <circle cx="77.5" cy="70.5" r="1.5" fill="#ffffff"/>
-        <line x1="60" y1="48" x2="60" y2="108" stroke="#be185d" stroke-width="1.5" stroke-dasharray="3,2"/>
-      </svg>`,
-      crane: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="60,48 5,28 44,74" fill="#ef4444" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="5,28 24,58 44,74" fill="#b91c1c"/>
-        <polygon points="60,48 115,22 76,74" fill="#f87171" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="115,22 96,54 76,74" fill="#ef4444"/>
-        <polygon points="60,48 44,74 60,96" fill="#dc2626" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,48 76,74 60,96" fill="#ef4444" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,96 50,118 60,110" fill="#991b1b" stroke="#7f1d1d" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="60,96 70,118 60,110" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="60,48 52,20 58,12 62,22" fill="#fca5a5" stroke="#991b1b" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="58,12 44,16 54,20" fill="#b91c1c"/>
-        <line x1="60" y1="48" x2="60" y2="96" stroke="#ffe4e6" stroke-width="1.2" stroke-dasharray="2,2"/>
-      </svg>`,
-      frog: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="20,78 4,104 36,94" fill="#15803d" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="100,78 116,104 84,94" fill="#16a34a" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,28 18,74 60,106" fill="#4ade80" stroke="#15803d" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,28 102,74 60,106" fill="#22c55e" stroke="#15803d" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="30,74 16,84 38,82" fill="#86efac" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="90,74 104,84 82,82" fill="#4ade80" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
-        <circle cx="42" cy="38" r="8" fill="#bbf7d0" stroke="#15803d" stroke-width="1.5"/>
-        <circle cx="78" cy="38" r="8" fill="#bbf7d0" stroke="#15803d" stroke-width="1.5"/>
-        <circle cx="43" cy="38" r="4.5" fill="#0f172a"/>
-        <circle cx="77" cy="38" r="4.5" fill="#0f172a"/>
-        <circle cx="45" cy="36" r="1.5" fill="#ffffff"/>
-        <circle cx="79" cy="36" r="1.5" fill="#ffffff"/>
-        <line x1="60" y1="28" x2="60" y2="106" stroke="#14532d" stroke-width="1.5" stroke-dasharray="3,2"/>
-      </svg>`,
-      fox: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="30,12 14,58 50,48" fill="#ea580c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="28,22 18,50 42,44" fill="#1e1e1e"/>
-        <polygon points="90,12 70,48 106,58" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="92,22 78,44 102,50" fill="#1e1e1e"/>
-        <polygon points="60,38 28,54 60,74" fill="#fb923c" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="60,38 92,54 60,74" fill="#f97316" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="28,54 8,76 60,110" fill="#fed7aa" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="92,54 112,76 60,110" fill="#ffffff" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,74 52,94 60,110" fill="#ffedd5"/>
-        <polygon points="60,74 68,94 60,110" fill="#fed7aa"/>
-        <polygon points="60,105 54,112 66,112" fill="#1e293b"/>
-        <polygon points="38,66 48,70 40,74" fill="#0f172a"/>
-        <polygon points="82,66 72,70 80,74" fill="#0f172a"/>
-        <circle cx="45" cy="69" r="0.9" fill="#ffffff"/>
-        <circle cx="75" cy="69" r="0.9" fill="#ffffff"/>
-      </svg>`,
-      butterfly: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="60,58 8,18 38,54" fill="#c084fc" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="8,18 28,8 44,34" fill="#e9d5ff" stroke="#6b21a8" stroke-width="1.5"/>
-        <polygon points="60,58 112,18 82,54" fill="#a855f7" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="112,18 92,8 76,34" fill="#d8b4fe" stroke="#6b21a8" stroke-width="1.5"/>
-        <polygon points="60,64 18,96 48,84" fill="#9333ea" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="18,96 34,110 54,90" fill="#a855f7"/>
-        <polygon points="60,64 102,96 72,84" fill="#7e22ce" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="102,96 86,110 66,90" fill="#9333ea"/>
-        <polygon points="60,34 56,86 64,86" fill="#3b0764"/>
-        <line x1="58" y1="34" x2="46" y2="14" stroke="#3b0764" stroke-width="2"/>
-        <line x1="62" y1="34" x2="74" y2="14" stroke="#3b0764" stroke-width="2"/>
-        <circle cx="46" cy="14" r="2.5" fill="#d8b4fe"/>
-        <circle cx="74" cy="14" r="2.5" fill="#d8b4fe"/>
-      </svg>`,
-      turtle: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="34,44 8,24 28,64" fill="#0d9488" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="86,44 112,24 92,64" fill="#14b8a6" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="34,78 14,98 38,94" fill="#0f766e" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="86,78 106,98 82,94" fill="#0d9488" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="60,14 48,36 72,36" fill="#5eead4" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
-        <circle cx="52" cy="24" r="2.2" fill="#042f2e"/>
-        <circle cx="68" cy="24" r="2.2" fill="#042f2e"/>
-        <circle cx="53" cy="23.5" r="0.7" fill="#ffffff"/>
-        <circle cx="69" cy="23.5" r="0.7" fill="#ffffff"/>
-        <polygon points="60,34 28,54 38,84 60,96 82,84 92,54" fill="#2dd4bf" stroke="#115e59" stroke-width="2.5" stroke-linejoin="round"/>
-        <polygon points="60,34 60,96 92,54" fill="#14b8a6" stroke="#115e59" stroke-width="1.5"/>
-        <polygon points="60,48 44,64 60,80 76,64" fill="#99f6e4" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
-      </svg>`,
-      puppy: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="34,34 8,76 38,64" fill="#ca8a04" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="86,34 112,76 82,64" fill="#eab308" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,24 28,44 60,84" fill="#fde047" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,24 92,44 60,84" fill="#facc15" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="28,44 24,80 60,106" fill="#fef08a" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="92,44 96,80 60,106" fill="#fde047" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="55,92 65,92 60,106" fill="#f43f5e"/>
-        <polygon points="60,78 52,86 68,86" fill="#1e1e1e"/>
-        <circle cx="44" cy="56" r="4.5" fill="#1c1917"/>
-        <circle cx="76" cy="56" r="4.5" fill="#1c1917"/>
-        <circle cx="46" cy="54" r="1.6" fill="#ffffff"/>
-        <circle cx="78" cy="54" r="1.6" fill="#ffffff"/>
-      </svg>`,
-      owl: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="40,18 28,44 50,44" fill="#4338ca" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="80,18 70,44 92,44" fill="#6366f1" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,34 24,58 34,106 60,116" fill="#818cf8" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,34 96,58 86,106 60,116" fill="#6366f1" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
-        <circle cx="45" cy="54" r="14" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/>
-        <circle cx="75" cy="54" r="14" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/>
-        <circle cx="45" cy="54" r="7" fill="#0f172a"/>
-        <circle cx="75" cy="54" r="7" fill="#0f172a"/>
-        <circle cx="47" cy="52" r="2.5" fill="#ffffff"/>
-        <circle cx="77" cy="52" r="2.5" fill="#ffffff"/>
-        <polygon points="60,64 54,76 66,76" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
-        <polygon points="60,80 48,94 60,104" fill="#c7d2fe"/>
-        <polygon points="60,80 72,94 60,104" fill="#a5b4fc"/>
-      </svg>`,
-      koi: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="18,102 4,116 34,106" fill="#ea580c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="18,102 14,82 34,96" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="96,28 48,44 28,96 60,80" fill="#fb923c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="96,28 76,64 28,96 60,80" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="74,34 58,14 48,38" fill="#ffedd5" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
-        <polygon points="96,28 112,38 86,54" fill="#ea580c" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
-        <circle cx="96" cy="38" r="3.2" fill="#0f172a"/>
-        <circle cx="97" cy="37" r="1.1" fill="#ffffff"/>
-        <polygon points="64,48 48,58 60,68" fill="#ffffff"/>
-        <polygon points="80,44 70,54 78,58" fill="#fdba74"/>
-      </svg>`,
-      elephant: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="40,32 4,42 24,84 50,74" fill="#94a3b8" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="80,32 116,42 96,84 70,74" fill="#cbd5e1" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,22 34,48 60,78" fill="#94a3b8" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,22 86,48 60,78" fill="#64748b" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="54,74 50,98 62,112 66,108 58,94 66,74" fill="#475569" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="46,76 38,90 48,84" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
-        <polygon points="74,76 82,90 72,84" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
-        <circle cx="45" cy="46" r="3.2" fill="#0f172a"/>
-        <circle cx="75" cy="46" r="3.2" fill="#0f172a"/>
-        <circle cx="46" cy="45" r="1" fill="#ffffff"/>
-        <circle cx="76" cy="45" r="1" fill="#ffffff"/>
-      </svg>`,
-      cat: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="24,12 14,54 50,44" fill="#fb923c" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="26,22 20,48 42,40" fill="#fed7aa"/>
-        <polygon points="96,12 70,44 106,54" fill="#f97316" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="94,22 78,40 100,48" fill="#fed7aa"/>
-        <polygon points="60,34 24,54 60,84" fill="#ffedd5" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,34 96,54 60,84" fill="#fed7aa" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="24,54 14,84 60,106" fill="#fdba74" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="96,54 106,84 60,106" fill="#fb923c" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,78 54,85 66,85" fill="#f43f5e"/>
-        <line x1="28" y1="80" x2="8" y2="78" stroke="#9a3412" stroke-width="1.5"/>
-        <line x1="28" y1="86" x2="10" y2="90" stroke="#9a3412" stroke-width="1.5"/>
-        <line x1="92" y1="80" x2="112" y2="78" stroke="#9a3412" stroke-width="1.5"/>
-        <line x1="92" y1="86" x2="110" y2="90" stroke="#9a3412" stroke-width="1.5"/>
-        <polygon points="34,60 48,56 46,68" fill="#10b981" stroke="#047857" stroke-width="1" stroke-linejoin="round"/>
-        <polygon points="86,60 72,56 74,68" fill="#10b981" stroke="#047857" stroke-width="1" stroke-linejoin="round"/>
-        <line x1="41" y1="57" x2="41" y2="67" stroke="#064e3b" stroke-width="2.2"/>
-        <line x1="79" y1="57" x2="79" y2="67" stroke="#064e3b" stroke-width="2.2"/>
-        <circle cx="43" cy="58" r="0.8" fill="#ffffff"/>
-        <circle cx="81" cy="58" r="0.8" fill="#ffffff"/>
-      </svg>`,
-      dragon: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <polygon points="30,8 18,38 45,34" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="90,8 75,34 102,38" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="48,44 4,28 34,74" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="72,44 116,28 86,74" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,22 34,48 60,78" fill="#fbbf24" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,22 86,48 60,78" fill="#f59e0b" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,68 38,94 60,110" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="60,68 82,94 60,110" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
-        <polygon points="42,50 54,56 44,60" fill="#ef4444"/>
-        <polygon points="78,50 66,56 76,60" fill="#ef4444"/>
-        <circle cx="47" cy="53" r="0.8" fill="#fef08a"/>
-        <circle cx="73" cy="53" r="0.8" fill="#fef08a"/>
-        <path d="M 60,110 Q 48,118 58,126 Q 72,118 60,110" fill="#f97316"/>
-      </svg>`,
-    };
-
     // 12 Origami Hours Data (Beginner Edition - Addition & Subtraction Only)
     const ORIGAMI_HOURS = [
       {
@@ -1189,7 +451,7 @@
         mathQuestion: "How many paper carrots did Barnaby fold in all for the picnic?",
         correctAnswer: 62,
         funFact: "Real bunnies can jump up to 3 feet high, and origami bunnies symbolize cleverness and good luck!",
-        svg: ORIGAMI_SVG_MAP.bunny
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="40,20 25,60 55,60" fill="#f472b6" stroke="#db2777" stroke-width="2"/><polygon points="80,15 65,60 95,60" fill="#f472b6" stroke="#db2777" stroke-width="2"/><polygon points="60,50 20,80 60,110" fill="#f9a8d4" stroke="#db2777" stroke-width="2"/><polygon points="60,50 100,80 60,110" fill="#f472b6" stroke="#db2777" stroke-width="2"/><circle cx="45" cy="74" r="3.5" fill="#1e1e1e"/><circle cx="75" cy="74" r="3.5" fill="#1e1e1e"/><polygon points="60,82 54,90 66,90" fill="#be185d"/></svg>`
       },
       {
         hour: 2, timeString: "2:00", animalName: "Origami Crane", characterName: "Kira the Peace Crane",
@@ -1198,7 +460,7 @@
         mathQuestion: "How many paper cranes did Kira fold altogether for the school garden garland?",
         correctAnswer: 64,
         funFact: "In Japanese tradition, folding 1,000 cranes (Senbazuru) is believed to grant a special wish of peace!",
-        svg: ORIGAMI_SVG_MAP.crane
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="60,50 5,30 45,75" fill="#ef4444" stroke="#991b1b" stroke-width="2"/><polygon points="60,50 115,25 75,75" fill="#f87171" stroke="#991b1b" stroke-width="2"/><polygon points="60,50 45,75 60,95" fill="#dc2626" stroke="#991b1b" stroke-width="2"/><polygon points="60,50 75,75 60,95" fill="#ef4444" stroke="#991b1b" stroke-width="2"/><polygon points="60,50 52,22 58,15 62,24" fill="#fca5a5" stroke="#991b1b" stroke-width="1.5"/></svg>`
       },
       {
         hour: 3, timeString: "3:00", animalName: "Origami Jumping Frog", characterName: "Jumpy the Frog",
@@ -1207,7 +469,7 @@
         mathQuestion: "How many lily pads does Jumpy have left to hop to reach his cozy log home?",
         correctAnswer: 26,
         funFact: "Origami jumping frogs have spring-pleat folds on their backs that launch them into the air!",
-        svg: ORIGAMI_SVG_MAP.frog
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="20,80 5,105 35,95" fill="#15803d" stroke="#14532d" stroke-width="2"/><polygon points="100,80 115,105 85,95" fill="#16a34a" stroke="#14532d" stroke-width="2"/><polygon points="60,30 20,75 60,105" fill="#4ade80" stroke="#15803d" stroke-width="2"/><polygon points="60,30 100,75 60,105" fill="#22c55e" stroke="#15803d" stroke-width="2"/><circle cx="43" cy="40" r="4" fill="#0f172a"/><circle cx="77" cy="40" r="4" fill="#0f172a"/></svg>`
       },
       {
         hour: 4, timeString: "4:00", animalName: "Origami Fox", characterName: "Rusty the Clever Fox",
@@ -1216,7 +478,7 @@
         mathQuestion: "How many forest treasures (acorns and leaves) did Rusty collect in total?",
         correctAnswer: 83,
         funFact: "Origami foxes (Kitsune) represent wisdom and sharp thinking!",
-        svg: ORIGAMI_SVG_MAP.fox
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="30,15 15,60 50,50" fill="#ea580c" stroke="#9a3412" stroke-width="2"/><polygon points="90,15 70,50 105,60" fill="#f97316" stroke="#9a3412" stroke-width="2"/><polygon points="30,55 10,75 60,110" fill="#fed7aa" stroke="#9a3412" stroke-width="2"/><polygon points="90,55 110,75 60,110" fill="#ffffff" stroke="#9a3412" stroke-width="2"/><polygon points="60,105 54,112 66,112" fill="#1e293b"/></svg>`
       },
       {
         hour: 5, timeString: "5:00", animalName: "Origami Butterfly", characterName: "Bella the Butterfly",
@@ -1225,7 +487,7 @@
         mathQuestion: "How many flowers does Bella have left to visit in the garden?",
         correctAnswer: 48,
         funFact: "Origami butterflies (Chocho) are one of the oldest recorded paper fold designs in history!",
-        svg: ORIGAMI_SVG_MAP.butterfly
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="60,60 10,20 40,55" fill="#c084fc" stroke="#6b21a8" stroke-width="2"/><polygon points="60,60 110,20 80,55" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/><polygon points="60,65 20,95 50,85" fill="#9333ea" stroke="#6b21a8" stroke-width="2"/><polygon points="60,65 100,95 70,85" fill="#7e22ce" stroke="#6b21a8" stroke-width="2"/><polygon points="60,35 56,85 64,85" fill="#3b0764"/></svg>`
       },
       {
         hour: 6, timeString: "6:00", animalName: "Origami Sea Turtle", characterName: "Shelly the Turtle",
@@ -1234,7 +496,7 @@
         mathQuestion: "How many shiny sea glass gems does Shelly have left in her pouch?",
         correctAnswer: 37,
         funFact: "Sea turtles have swam Earth's oceans for over 100 million years!",
-        svg: ORIGAMI_SVG_MAP.turtle
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="35,45 10,25 30,65" fill="#0d9488" stroke="#115e59" stroke-width="2"/><polygon points="85,45 110,25 90,65" fill="#14b8a6" stroke="#115e59" stroke-width="2"/><polygon points="60,15 50,38 70,38" fill="#5eead4" stroke="#115e59" stroke-width="2"/><polygon points="60,35 30,55 40,85 60,95 80,85 90,55" fill="#2dd4bf" stroke="#115e59" stroke-width="2.5"/></svg>`
       },
       {
         hour: 7, timeString: "7:00", animalName: "Origami Puppy", characterName: "Pip the Pup",
@@ -1243,7 +505,7 @@
         mathQuestion: "How many paper bones does Pip have in his yard now?",
         correctAnswer: 59,
         funFact: "Folding puppy ears takes just two diagonal folds down on a triangle!",
-        svg: ORIGAMI_SVG_MAP.puppy
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="35,35 10,75 40,65" fill="#ca8a04" stroke="#854d0e" stroke-width="2"/><polygon points="85,35 110,75 80,65" fill="#eab308" stroke="#854d0e" stroke-width="2"/><polygon points="60,25 30,45 60,85" fill="#fde047" stroke="#854d0e" stroke-width="2"/><polygon points="60,25 90,45 60,85" fill="#facc15" stroke="#854d0e" stroke-width="2"/><polygon points="60,80 52,88 68,88" fill="#1e1e1e"/></svg>`
       },
       {
         hour: 8, timeString: "8:00", animalName: "Origami Wise Owl", characterName: "Professor Hoot",
@@ -1252,7 +514,7 @@
         mathQuestion: "How many stars did Professor Hoot count in total in the night sky?",
         correctAnswer: 85,
         funFact: "Owls can swivel their heads 270 degrees because they have 14 neck vertebrae!",
-        svg: ORIGAMI_SVG_MAP.owl
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="40,20 30,45 50,45" fill="#4338ca" stroke="#312e81" stroke-width="2"/><polygon points="80,20 70,45 90,45" fill="#6366f1" stroke="#312e81" stroke-width="2"/><polygon points="60,35 25,60 35,105 60,115" fill="#818cf8" stroke="#312e81" stroke-width="2"/><circle cx="45" cy="55" r="7" fill="#0f172a"/><circle cx="75" cy="55" r="7" fill="#0f172a"/><polygon points="60,65 54,75 66,75" fill="#f59e0b"/></svg>`
       },
       {
         hour: 9, timeString: "9:00", animalName: "Origami Koi Fish", characterName: "Finn the Koi",
@@ -1261,7 +523,7 @@
         mathQuestion: "How many origami koi fish were still swimming near the pond surface?",
         correctAnswer: 37,
         funFact: "In legend, koi that leaped the dragon falls transformed into celestial dragons!",
-        svg: ORIGAMI_SVG_MAP.koi
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="20,100 5,115 35,105" fill="#ea580c" stroke="#9a3412" stroke-width="2"/><polygon points="95,30 50,45 30,95 60,80" fill="#fb923c" stroke="#9a3412" stroke-width="2"/><polygon points="95,30 75,65 30,95 60,80" fill="#f97316" stroke="#9a3412" stroke-width="2"/><circle cx="95" cy="40" r="3" fill="#0f172a"/></svg>`
       },
       {
         hour: 10, timeString: "10:00", animalName: "Origami Elephant", characterName: "Ella the Elephant",
@@ -1270,7 +532,7 @@
         mathQuestion: "How many liters of water did Ella carry in total across both trips?",
         correctAnswer: 283,
         funFact: "An elephant's trunk has over 40,000 muscles and can lift over 600 pounds!",
-        svg: ORIGAMI_SVG_MAP.elephant
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="40,35 5,45 25,85 50,75" fill="#94a3b8" stroke="#334155" stroke-width="2"/><polygon points="80,35 115,45 95,85 70,75" fill="#cbd5e1" stroke="#334155" stroke-width="2"/><polygon points="60,25 35,50 60,80" fill="#94a3b8" stroke="#334155" stroke-width="2"/><polygon points="54,75 52,100 62,112 66,108 58,95 66,75" fill="#475569" stroke="#334155" stroke-width="2"/></svg>`
       },
       {
         hour: 11, timeString: "11:00", animalName: "Origami Kitten", characterName: "Mochi the Cat",
@@ -1279,7 +541,7 @@
         mathQuestion: "How many soft paper yarn balls does Mochi have to play with in total?",
         correctAnswer: 94,
         funFact: "Origami cat folds are designed to stand up on all four tiny paper paws!",
-        svg: ORIGAMI_SVG_MAP.cat
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="25,15 15,55 50,45" fill="#fb923c" stroke="#c2410c" stroke-width="2"/><polygon points="95,15 70,45 105,55" fill="#f97316" stroke="#c2410c" stroke-width="2"/><polygon points="60,35 25,55 60,85" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/><polygon points="60,35 95,55 60,85" fill="#fed7aa" stroke="#c2410c" stroke-width="2"/><polygon points="60,78 54,85 66,85" fill="#f43f5e"/></svg>`
       },
       {
         hour: 12, timeString: "12:00", animalName: "Origami Golden Dragon", characterName: "Ignis the Grand Dragon",
@@ -1288,7 +550,7 @@
         mathQuestion: "How many glowing paper lanterns does Ignis have left to light for the final stroke of midnight?",
         correctAnswer: 28,
         funFact: "The origami dragon is a world-famous master-level fold with pleated wings and horns!",
-        svg: ORIGAMI_SVG_MAP.dragon
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full"><polygon points="30,10 20,40 45,35" fill="#b45309" stroke="#78350f" stroke-width="2"/><polygon points="90,10 75,35 100,40" fill="#d97706" stroke="#78350f" stroke-width="2"/><polygon points="60,25 35,50 60,80" fill="#fbbf24" stroke="#78350f" stroke-width="2"/><polygon points="60,25 85,50 60,80" fill="#f59e0b" stroke="#78350f" stroke-width="2"/><polygon points="60,70 40,95 60,110" fill="#d97706" stroke="#78350f" stroke-width="2"/></svg>`
       }
     ];
 
@@ -1339,26 +601,27 @@
         const yPct = 50 + radiusPct * Math.sin(angleRad);
 
         const node = document.createElement('div');
-        node.className = 'clock-node absolute -translate-x-1/2 -translate-y-1/2 z-20';
-        node.style.position = 'absolute';
+        node.className = 'absolute -translate-x-1/2 -translate-y-1/2 z-20';
         node.style.left = `${xPct}%`;
         node.style.top = `${yPct}%`;
-        node.style.transform = 'translate(-50%, -50%)';
-        node.style.zIndex = '20';
 
         node.innerHTML = `
           <button onclick="openHourModal(${h.hour})" onmouseenter="playTick(); pointHands(${h.hour})"
-            class="hour-btn ${isUnlocked ? 'unlocked' : 'locked'}"
+            class="group relative flex flex-col items-center justify-center rounded-2xl p-1 sm:p-2 transition-all duration-300 focus:outline-none ${
+              isUnlocked
+                ? 'bg-white/95 ring-4 ring-emerald-400 shadow-md scale-100 hover:scale-110'
+                : 'bg-white/85 hover:bg-white ring-2 ring-amber-200 hover:ring-amber-400 shadow-md hover:scale-105'
+            }"
             style="width: clamp(58px, 14vw, 86px); height: clamp(58px, 14vw, 86px);">
-            <span class="hour-badge-time ${
-              isUnlocked ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'
-            }" style="${isUnlocked ? 'background:#059669; color:#fff;' : 'background:#d97706; color:#fff;'}">${h.timeString}</span>
-            <div style="position:relative; margin-top:4px; display:flex; align-items:center; justify-content:center; width:clamp(36px, 8vw, 46px); height:clamp(36px, 8vw, 46px);">
+            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-black shadow-sm ${
+              isUnlocked ? 'bg-emerald-600 text-white ring-2 ring-emerald-200' : 'bg-amber-600 text-white'
+            }">${h.timeString}</span>
+            <div class="relative mt-1 flex items-center justify-center w-[38px] h-[38px] sm:w-[46px] sm:h-[46px]">
               ${h.svg}
             </div>
-            <span class="hour-badge-status ${
+            <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full ${
               isUnlocked ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-200'
-            }" style="${isUnlocked ? 'background:#d1fae5; color:#065f46; border:1px solid #6ee7b7;' : 'background:#fffbeb; color:#92400e; border:1px solid #fde68a;'}">
+            } px-1.5 text-[9px] font-bold border shadow-xs whitespace-nowrap">
               ${isUnlocked ? '★ Unlocked' : '🔒 Lock ' + h.hour}
             </span>
           </button>
@@ -1372,9 +635,7 @@
       document.getElementById('progress-bar').style.width = `${Math.round((count / 12) * 100)}%`;
 
       if (count === 12) {
-        const celeb = document.getElementById('celebration-modal');
-        celeb.classList.remove('hidden');
-        celeb.style.display = 'flex';
+        document.getElementById('celebration-modal').classList.remove('hidden');
       }
     }
 
@@ -1401,44 +662,27 @@
       document.getElementById('modal-question').innerText = data.mathQuestion;
       document.getElementById('modal-fun-fact').innerText = data.funFact;
       document.getElementById('user-answer-input').value = '';
-      
-      const errEl = document.getElementById('modal-error');
-      errEl.classList.add('hidden');
-      errEl.style.display = 'none';
+      document.getElementById('modal-error').classList.add('hidden');
 
       const isUnlocked = unlockedHours.has(hour);
-      const solvedArea = document.getElementById('form-solved-area');
-      const unsolvedArea = document.getElementById('form-unsolved-area');
-      const countdownEl = document.getElementById('countdown-text');
-
       if (isUnlocked) {
-        unsolvedArea.classList.add('hidden');
-        unsolvedArea.style.display = 'none';
-        solvedArea.classList.remove('hidden');
-        solvedArea.style.display = 'block';
+        document.getElementById('form-unsolved-area').classList.add('hidden');
+        document.getElementById('form-solved-area').classList.remove('hidden');
         document.getElementById('modal-solved-answer').innerText = `Answer: ${data.correctAnswer} — Great job!`;
-        countdownEl.classList.add('hidden');
-        countdownEl.style.display = 'none';
+        document.getElementById('countdown-text').classList.add('hidden');
       } else {
-        unsolvedArea.classList.remove('hidden');
-        unsolvedArea.style.display = 'block';
-        solvedArea.classList.add('hidden');
-        solvedArea.style.display = 'none';
-        countdownEl.classList.remove('hidden');
-        countdownEl.style.display = 'inline';
+        document.getElementById('form-unsolved-area').classList.remove('hidden');
+        document.getElementById('form-solved-area').classList.add('hidden');
+        document.getElementById('countdown-text').classList.remove('hidden');
       }
 
-      const modal = document.getElementById('hour-modal');
-      modal.classList.remove('hidden');
-      modal.style.display = 'flex';
+      document.getElementById('hour-modal').classList.remove('hidden');
     }
 
     function closeModal() {
       playTick();
       if (countdownTimer) clearInterval(countdownTimer);
-      const modal = document.getElementById('hour-modal');
-      modal.classList.add('hidden');
-      modal.style.display = 'none';
+      document.getElementById('hour-modal').classList.add('hidden');
     }
 
     function submitAnswer(e) {
@@ -1461,18 +705,12 @@
         saveState();
         renderClock();
 
-        const unsolvedArea = document.getElementById('form-unsolved-area');
-        const solvedArea = document.getElementById('form-solved-area');
-        unsolvedArea.classList.add('hidden');
-        unsolvedArea.style.display = 'none';
-        solvedArea.classList.remove('hidden');
-        solvedArea.style.display = 'block';
+        document.getElementById('form-unsolved-area').classList.add('hidden');
+        document.getElementById('form-solved-area').classList.remove('hidden');
         document.getElementById('modal-solved-answer').innerText = `Answer: ${data.correctAnswer} — Fantastic work!`;
 
         let seconds = 2;
-        const countdownEl = document.getElementById('countdown-text');
-        countdownEl.innerText = `Returning to clock in ${seconds}s...`;
-        countdownEl.style.display = 'inline';
+        document.getElementById('countdown-text').innerText = `Returning to clock in ${seconds}s...`;
         if (countdownTimer) clearInterval(countdownTimer);
         countdownTimer = setInterval(() => {
           seconds--;
@@ -1480,7 +718,7 @@
             clearInterval(countdownTimer);
             closeModal();
           } else {
-            countdownEl.innerText = `Returning to clock in ${seconds}s...`;
+            document.getElementById('countdown-text').innerText = `Returning to clock in ${seconds}s...`;
           }
         }, 1000);
       } else {
@@ -1492,13 +730,10 @@
       const el = document.getElementById('modal-error');
       el.innerText = msg;
       el.classList.remove('hidden');
-      el.style.display = 'block';
     }
 
     function closeCelebration() {
-      const celeb = document.getElementById('celebration-modal');
-      celeb.classList.add('hidden');
-      celeb.style.display = 'none';
+      document.getElementById('celebration-modal').classList.add('hidden');
     }
 
     function resetBreakout() {
@@ -1734,93 +969,37 @@
       return doc;
     }
 
-    function updatePrintContainer() {
-      const studentName = (document.getElementById('cert-name-input').value || '').trim() || 'Master Math Clockmaker';
-      const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      const printNameEl = document.getElementById('print-cert-student-name');
-      const printDateEl = document.getElementById('print-cert-date');
-      const printImgEl = document.getElementById('print-cert-clock-img');
-      if (printNameEl) printNameEl.innerText = studentName;
-      if (printDateEl) printDateEl.innerText = dateStr;
-      if (printImgEl) {
-        const url = renderClockCanvasDataUrl();
-        if (url) printImgEl.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:contain;border-radius:9999px;border:3px solid #b45309;" />`;
-      }
-    }
-
     function printPdfCertificate() {
-      updatePrintContainer();
-
-      if (window.jspdf && window.jspdf.jsPDF) {
-        try {
-          const doc = createCertificateDoc();
-          const blob = doc.output('blob');
-          const blobUrl = URL.createObjectURL(blob);
-          const iframe = document.createElement('iframe');
-          iframe.style.position = 'fixed';
-          iframe.style.width = '0';
-          iframe.style.height = '0';
-          iframe.src = blobUrl;
-          document.body.appendChild(iframe);
-          iframe.onload = () => {
-            setTimeout(() => {
-              iframe.focus();
-              iframe.contentWindow.print();
-              setTimeout(() => {
-                document.body.removeChild(iframe);
-                URL.revokeObjectURL(blobUrl);
-              }, 2000);
-            }, 200);
-          };
-          return;
-        } catch (e) {
-          console.warn('PDF iframe printing failed, using browser print dialog', e);
-        }
-      }
-      window.print();
+      const doc = createCertificateDoc();
+      const blob = doc.output('blob');
+      const blobUrl = URL.createObjectURL(blob);
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.src = blobUrl;
+      document.body.appendChild(iframe);
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.focus();
+          iframe.contentWindow.print();
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+            URL.revokeObjectURL(blobUrl);
+          }, 2000);
+        }, 200);
+      };
     }
 
     function downloadPdfCertificate() {
-      if (window.jspdf && window.jspdf.jsPDF) {
-        try {
-          const doc = createCertificateDoc();
-          const name = (document.getElementById('cert-name-input').value || '').trim() || 'Student';
-          doc.save(`Origami_Clock_Master_Certificate_${name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
-          return;
-        } catch (e) {
-          console.warn('jsPDF save failed', e);
-        }
-      }
-      printPdfCertificate();
+      const doc = createCertificateDoc();
+      const name = (document.getElementById('cert-name-input').value || '').trim() || 'Student';
+      doc.save(`Origami_Clock_Master_Certificate_${name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
     }
 
     // Init
     renderDialTicks();
     renderClock();
   </script>
-
-  <!-- Dedicated Print Certificate Container (Visible only when printing) -->
-  <div id="print-certificate-container" style="display: none;">
-    <div style="border: 4px solid #b45309; padding: 24px; border-radius: 16px; background: #fffdf5; max-width: 850px; margin: 0 auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;">
-      <h1 style="color: #78350f; font-size: 26px; font-weight: 900; margin-bottom: 6px; text-transform: uppercase;">Certificate of Achievement</h1>
-      <h2 style="color: #b45309; font-size: 15px; font-weight: bold; margin-bottom: 16px;">Origami Math Clock Master • Beginner Edition</h2>
-      <p style="color: #64748b; font-size: 11px; margin-bottom: 6px;">This official honor is proudly presented to:</p>
-      <div id="print-cert-student-name" style="color: #0f172a; font-size: 24px; font-weight: 900; border-bottom: 2px solid #d97706; display: inline-block; padding: 4px 28px; margin-bottom: 14px;">Master Math Clockmaker</div>
-      <p style="color: #334155; font-size: 12px; max-width: 620px; margin: 0 auto 16px; line-height: 1.5;">
-        For demonstrating outstanding mathematical problem-solving skills by successfully unlocking all 12 Origami Animal Clock Hours across Addition and Subtraction.
-      </p>
-      <div id="print-cert-clock-img" style="margin: 0 auto 16px; width: 140px; height: 140px;"></div>
-      <div style="display: flex; justify-content: space-around; margin-top: 16px; font-size: 10px; color: #64748b;">
-        <div>
-          <div id="print-cert-date" style="border-bottom: 1px solid #94a3b8; width: 150px; height: 18px; margin-bottom: 4px; font-weight: bold; color: #0f172a;"></div>
-          <div>Date Awarded</div>
-        </div>
-        <div>
-          <div style="border-bottom: 1px solid #94a3b8; width: 150px; height: 18px; margin-bottom: 4px; font-style: italic; font-size: 13px; color: #0f172a;">/s/ Master Clockmaker</div>
-          <div>Origami Math Instructor</div>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
