@@ -1,255 +1,1190 @@
-import { ORIGAMI_SVG_STRINGS } from './utils/origamiSvgData';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Origami Animal Clock - Beginner Edition Math Breakout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(8deg); }
+    }
+    .animate-float {
+      animation: floatParticle 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#fffbeb] via-[#fef3c7]/60 to-[#fed7aa]/40 text-slate-800 font-sans pb-16 antialiased select-none">
 
-export interface OrigamiHour {
-  hour: number; // 1 to 12
-  timeString: string; // "1:00", "2:00", etc.
-  animalName: string;
-  characterName: string;
-  themeColor: string; // primary origami paper color
-  accentColor: string;
-  mathSkill: string; // e.g. "Addition (+)"
-  story: string;
-  mathQuestion: string;
-  correctAnswer: number;
-  funFact: string;
-  foldingHint: string;
-  svgType: string;
-  svgContent: string;
-}
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-amber-200/80 bg-white/95 backdrop-blur-md shadow-xs">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+      <div class="flex items-center gap-3">
+        <span class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-xl sm:text-2xl shadow-md ring-2 ring-amber-300">
+          🕒
+        </span>
+        <div>
+          <h1 class="text-base sm:text-xl font-black text-amber-950 tracking-tight leading-tight">
+            Origami Animal Clock
+          </h1>
+          <p class="text-[11px] sm:text-xs font-semibold text-amber-700">
+            Grade 3 Digital Math Breakout &bull; Beginner Edition
+          </p>
+        </div>
+      </div>
 
-const RAW_HOURS: Omit<OrigamiHour, 'svgContent'>[] = [
-  {
-    hour: 1,
-    timeString: '1:00',
-    animalName: 'Origami Bunny',
-    characterName: 'Barnaby the Bunny',
-    themeColor: '#f472b6', // soft pink
-    accentColor: '#ec4899',
-    mathSkill: 'Addition (+)',
-    story:
-      'Barnaby the origami bunny is preparing snacks for his hopping meadow picnic! In the sunny morning, he folded 24 tiny paper carrots. In the afternoon, he folded 38 more paper carrots to share with his best friends.',
-    mathQuestion:
-      'How many paper carrots did Barnaby fold in all for the picnic?',
-    correctAnswer: 62,
-    funFact:
-      'Real bunnies can jump up to 3 feet high in the air, and in traditional Japanese origami, bunnies are known as Usagi and symbolize good luck and clever thinking!',
-    foldingHint:
-      'Add the tens first (20 + 30 = 50), then add the ones (4 + 8 = 12), and combine them: 50 + 12 = 62!',
-    svgType: 'bunny',
-  },
-  {
-    hour: 2,
-    timeString: '2:00',
-    animalName: 'Origami Crane',
-    characterName: 'Kira the Peace Crane',
-    themeColor: '#ef4444', // vibrant red
-    accentColor: '#b91c1c',
-    mathSkill: 'Addition (+)',
-    story:
-      'Kira the elegant paper crane is crafting colorful garlands to hang in the school garden. In the morning, she folded 35 silver paper cranes. In the afternoon, she folded 29 golden paper cranes to complete the garland.',
-    mathQuestion:
-      'How many paper cranes did Kira fold altogether for the school garden garland?',
-    correctAnswer: 64,
-    funFact:
-      'In Japanese tradition (Senbazuru), folding 1,000 origami cranes is said to grant one special wish of health, happiness, and peace!',
-    foldingHint:
-      'Add 35 + 29. Try adding 35 + 30 = 65, then subtract 1 to get 64!',
-    svgType: 'crane',
-  },
-  {
-    hour: 3,
-    timeString: '3:00',
-    animalName: 'Origami Jumping Frog',
-    characterName: 'Jumpy the Frog',
-    themeColor: '#22c55e', // vivid green
-    accentColor: '#15803d',
-    mathSkill: 'Subtraction (−)',
-    story:
-      'Jumpy is a bouncy paper frog hopping along a 54-lily-pad trail across the peaceful pond. Jumpy has already hopped across 28 lily pads toward his cozy log home.',
-    mathQuestion:
-      'How many lily pads does Jumpy have left to hop to reach his cozy log home?',
-    correctAnswer: 26,
-    funFact:
-      'Origami jumping frogs have a special spring-fold on their backs! When you lightly press and slide your finger off the fold, air pressure and paper tension make them leap into the air!',
-    foldingHint:
-      'Subtract the hopped lily pads from the total: 54 − 28 = 26!',
-    svgType: 'frog',
-  },
-  {
-    hour: 4,
-    timeString: '4:00',
-    animalName: 'Origami Fox',
-    characterName: 'Rusty the Clever Fox',
-    themeColor: '#f97316', // bright orange
-    accentColor: '#c2410c',
-    mathSkill: 'Addition (+)',
-    story:
-      'Rusty the woodland origami fox is getting ready for a cozy autumn celebration. He collected 47 golden acorns and 36 red maple leaves to decorate his paper tree den.',
-    mathQuestion:
-      'How many forest treasures (acorns and leaves) did Rusty collect in total?',
-    correctAnswer: 83,
-    funFact:
-      'In folklore, the origami fox (Kitsune) is known for being extremely clever and wise. Its triangular folded ears help it listen for sounds miles away in the paper forest!',
-    foldingHint:
-      'Add the acorns and leaves together: 47 + 36 = 83!',
-    svgType: 'fox',
-  },
-  {
-    hour: 5,
-    timeString: '5:00',
-    animalName: 'Origami Butterfly',
-    characterName: 'Bella the Fluttering Butterfly',
-    themeColor: '#a855f7', // purple / violet
-    accentColor: '#7e22ce',
-    mathSkill: 'Subtraction (−)',
-    story:
-      'Bella the delicate origami butterfly flew across a sunny garden filled with 85 freshly bloomed flowers. So far today, she has already visited and sprinkled sparkling pollen on 37 flowers.',
-    mathQuestion:
-      'How many flowers does Bella have left to visit in the garden?',
-    correctAnswer: 48,
-    funFact:
-      'Origami butterflies (Chocho) are one of the oldest recorded origami designs in history! In ancient Japan, pairs of paper butterflies were used at weddings to symbolize two hearts fluttering together.',
-    foldingHint:
-      'Subtract the visited flowers from the total: 85 − 37 = 48!',
-    svgType: 'butterfly',
-  },
-  {
-    hour: 6,
-    timeString: '6:00',
-    animalName: 'Origami Sea Turtle',
-    characterName: 'Shelly the Sea Turtle',
-    themeColor: '#14b8a6', // teal / aqua
-    accentColor: '#0f766e',
-    mathSkill: 'Subtraction (−)',
-    story:
-      'Shelly the origami sea turtle was swimming along the coral reef with 64 shiny sea glass gems in her pouch. She shared 27 gems with her sea turtle friends to decorate their shell nests.',
-    mathQuestion:
-      'How many shiny sea glass gems does Shelly have left in her pouch?',
-    correctAnswer: 37,
-    funFact:
-      'Sea turtles have lived on Earth for more than 100 million years! In origami, folding a turtle shell requires precise accordion pleats to mimic the geometric plates of the carapace.',
-    foldingHint:
-      'Subtract the shared gems from the original collection: 64 − 27 = 37!',
-    svgType: 'turtle',
-  },
-  {
-    hour: 7,
-    timeString: '7:00',
-    animalName: 'Origami Puppy',
-    characterName: 'Pip the Playful Pup',
-    themeColor: '#eab308', // warm yellow / golden
-    accentColor: '#a16207',
-    mathSkill: 'Two-Step (+ and −)',
-    story:
-      'Pip the origami puppy had 72 colorful paper chew bones in his yard. He hid 28 bones beneath the grass. Later that afternoon, his puppy pal gave him 15 brand-new squeaky paper bones.',
-    mathQuestion:
-      'How many paper bones does Pip have in his yard now?',
-    correctAnswer: 59,
-    funFact:
-      'The origami puppy face is one of the very first models beginners learn! By folding down the top two corners of a paper triangle, you magically create floppy puppy ears in seconds.',
-    foldingHint:
-      'First subtract what he hid: 72 − 28 = 44. Then add the new bones: 44 + 15 = 59!',
-    svgType: 'puppy',
-  },
-  {
-    hour: 8,
-    timeString: '8:00',
-    animalName: 'Origami Wise Owl',
-    characterName: 'Professor Hoot',
-    themeColor: '#6366f1', // indigo / starry blue
-    accentColor: '#4338ca',
-    mathSkill: 'Addition (+)',
-    story:
-      'Professor Hoot the origami owl loves stargazing from his tall pine tree perch. Tonight, he counted 48 twinkling stars in the northern sky and 37 shimmering stars in the southern sky.',
-    mathQuestion:
-      'How many stars did Professor Hoot count in total in the night sky?',
-    correctAnswer: 85,
-    funFact:
-      'Origami owls symbolize wisdom and watchful guidance! Owls can rotate their necks up to 270 degrees because they have 14 neck vertebrae—twice as many as humans!',
-    foldingHint:
-      'Add the north and south stars together: 48 + 37 = 85!',
-    svgType: 'owl',
-  },
-  {
-    hour: 9,
-    timeString: '9:00',
-    animalName: 'Origami Koi Fish',
-    characterName: 'Finn the Lucky Koi',
-    themeColor: '#f97316', // orange / koi red
-    accentColor: '#ea580c',
-    mathSkill: 'Subtraction (−)',
-    story:
-      'Finn the shimmering koi fish is swimming in a serene water garden with 76 colorful origami koi fish. At sunset, 39 of the koi swam down to rest among the cool water reeds.',
-    mathQuestion:
-      'How many origami koi fish were still swimming near the pond surface?',
-    correctAnswer: 37,
-    funFact:
-      'Koi fish are famous for their persistence and strength swimming upstream. In Japanese legends, a koi that leaped over a dragon waterfall would transform into a mighty golden dragon!',
-    foldingHint:
-      'Subtract the resting koi from the total: 76 − 39 = 37!',
-    svgType: 'koi',
-  },
-  {
-    hour: 10,
-    timeString: '10:00',
-    animalName: 'Origami Elephant',
-    characterName: 'Ella the Gentle Giant',
-    themeColor: '#64748b', // slate blue / elephant gray
-    accentColor: '#334155',
-    mathSkill: '3-Digit Addition (+)',
-    story:
-      'Ella the origami elephant is helping fill water troughs for the jungle sanctuary. On her first morning trip, she carried 145 liters of cool water. On her second afternoon trip, she carried 138 liters of water.',
-    mathQuestion:
-      'How many liters of water did Ella carry in total across both trips?',
-    correctAnswer: 283,
-    funFact:
-      'An elephant’s trunk contains over 40,000 individual muscles! In origami, folding an elephant’s trunk and wide fan ears requires precise reverse folds.',
-    foldingHint:
-      'Line up your digits: 145 + 138. Start with ones (5+8=13), regroup to tens (1+4+3=8), then hundreds (1+1=2)!',
-    svgType: 'elephant',
-  },
-  {
-    hour: 11,
-    timeString: '11:00',
-    animalName: 'Origami Kitten',
-    characterName: 'Mochi the Curious Cat',
-    themeColor: '#fb923c', // warm coral
-    accentColor: '#ea580c',
-    mathSkill: 'Addition (+)',
-    story:
-      'Mochi the origami kitten discovered a playful craft room! In the big closet, there were 58 soft red yarn balls. On the rug, there were 36 soft blue yarn balls.',
-    mathQuestion:
-      'How many soft yarn balls does Mochi have to play with in total?',
-    correctAnswer: 94,
-    funFact:
-      'Cats have remarkable balance, and origami cat designs use clever center-creases so the folded paper cat can actually stand upright on its four tiny paper paws!',
-    foldingHint:
-      'Add the red and blue yarn balls together: 58 + 36 = 94!',
-    svgType: 'cat',
-  },
-  {
-    hour: 12,
-    timeString: '12:00',
-    animalName: 'Origami Golden Dragon',
-    characterName: 'Ignis the Grand Dragon',
-    themeColor: '#d97706', // gold / amber
-    accentColor: '#b45309',
-    mathSkill: 'Two-Step Finale (+ and −)',
-    story:
-      'Ignis the majestic origami dragon is putting on the grand clock tower finale show! He started with 95 glowing paper festival lanterns. First, he released 38 lanterns into the night sky. Then, he released 29 more lanterns for the midnight fireworks display.',
-    mathQuestion:
-      'How many glowing paper lanterns does Ignis have left to light for the final stroke of midnight?',
-    correctAnswer: 28,
-    funFact:
-      'The origami dragon is one of the most famous master-level origami folds in the world, featuring faceted horns, pleated wings, and serrated paper claws!',
-    foldingHint:
-      'Step 1: Add the lanterns he already released (38 + 29 = 67). Step 2: Subtract from 95: 95 − 67 = 28!',
-    svgType: 'dragon',
-  },
-];
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="sound-btn" onclick="toggleSound()" class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-amber-300 bg-white text-base shadow-xs hover:bg-amber-50">
+          🔊
+        </button>
+        <button onclick="resetBreakout()" class="rounded-xl border border-amber-300 bg-white px-3 py-1.5 text-xs font-bold text-amber-800 shadow-xs hover:bg-rose-50 hover:text-rose-700 transition-colors">
+          Reset
+        </button>
+      </div>
+    </div>
 
-export const ORIGAMI_HOURS: OrigamiHour[] = RAW_HOURS.map((h) => ({
-  ...h,
-  svgContent: ORIGAMI_SVG_STRINGS[h.svgType] || '',
-}));
+    <!-- Progress bar -->
+    <div class="h-2 w-full bg-amber-100 overflow-hidden">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+    </div>
+  </header>
 
+  <!-- Main Container -->
+  <main class="mx-auto max-w-5xl px-4 pt-6 sm:pt-8 sm:px-6">
+    <!-- Intro Card -->
+    <div class="mb-6 rounded-3xl border-2 border-amber-300/80 bg-white/95 p-4 sm:p-6 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-amber-800">
+            <span>⭐</span> Grade 3 Math Mission &bull; Beginner Edition
+          </div>
+          <h2 class="mt-1 text-lg sm:text-2xl font-black text-slate-800">
+            Unlock the 12 Magical Origami Animals!
+          </h2>
+          <p class="mt-1 text-xs sm:text-sm font-medium text-slate-600 leading-relaxed max-w-2xl">
+            Click any hour on the clock dial below to open that origami animal's section. Solve the addition or subtraction story problem to unlock that hour. When all 12 hours are unlocked, you'll win the <strong>Master Origami Clockmaker Award</strong>!
+          </p>
+        </div>
+
+        <div class="flex shrink-0 items-center gap-2 rounded-2xl border-2 border-amber-300 bg-gradient-to-tr from-amber-50 to-amber-100/80 px-4 py-3 shadow-xs">
+          <span class="text-2xl sm:text-3xl">⭐</span>
+          <div>
+            <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800">
+              Hours Unlocked
+            </div>
+            <div id="status-counter" class="text-xl sm:text-2xl font-black text-amber-950 tabular-nums">
+              0 / 12
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Clock Face Centerpiece -->
+    <div class="relative mx-auto flex flex-col items-center py-2">
+      <div class="relative h-[340px] w-[340px] sm:h-[460px] sm:w-[460px] md:h-[540px] md:w-[540px] select-none">
+        <!-- Bezel -->
+        <div class="absolute inset-0 rounded-full border-[10px] sm:border-[14px] border-[#d97706]/30 bg-gradient-to-b from-[#fffbeb] via-[#fef3c7] to-[#fef9c3] shadow-[0_15px_40px_rgba(217,119,6,0.18)]">
+          <!-- Dial SVG Background -->
+          <svg class="absolute inset-0 h-full w-full pointer-events-none" viewBox="0 0 540 540" id="dial-svg"></svg>
+        </div>
+
+        <!-- Clock Hands -->
+        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div id="hour-hand" class="absolute origin-bottom transition-transform duration-500 ease-out" style="height: 30%; width: 8px; bottom: 50%; transform: rotate(0deg)">
+            <div class="h-full w-full rounded-t-full bg-gradient-to-t from-[#78350f] to-[#b45309] shadow-md"></div>
+          </div>
+          <div id="minute-hand" class="absolute origin-bottom transition-transform duration-500 ease-out" style="height: 42%; width: 4px; bottom: 50%; transform: rotate(0deg)">
+            <div class="h-full w-full rounded-t-full bg-gradient-to-t from-[#92400e] to-[#d97706] shadow-sm"></div>
+          </div>
+          <div class="relative z-10 flex h-14 w-14 sm:h-20 sm:w-20 items-center justify-center rounded-full border-4 border-[#b45309] bg-gradient-to-tr from-[#f59e0b] via-[#fbbf24] to-[#fef08a] shadow-lg">
+            <div class="h-4 w-4 rounded-full bg-[#78350f]"></div>
+          </div>
+        </div>
+
+        <!-- 12 Hour Buttons Container -->
+        <div id="clock-hours-container"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for Hour Math Puzzle -->
+  <div id="hour-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
+    <div class="relative w-full max-w-2xl rounded-3xl border-4 border-amber-300 bg-gradient-to-b from-amber-50 via-white to-amber-50/80 p-6 sm:p-8 shadow-2xl">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-amber-200/80 pb-4">
+        <div class="flex items-center gap-3">
+          <span id="modal-hour-badge" class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-amber-500 font-black text-white text-lg sm:text-xl shadow-md ring-2 ring-amber-300">
+            1
+          </span>
+          <div>
+            <div id="modal-time-label" class="text-xs font-bold uppercase tracking-wider text-amber-700">1:00 O'Clock Mission</div>
+            <h2 id="modal-character-name" class="text-xl sm:text-2xl font-black text-slate-800">Barnaby the Bunny</h2>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-600 hover:bg-rose-100 hover:text-rose-600">✕</button>
+      </div>
+
+      <!-- Body -->
+      <div class="mt-6 flex flex-col md:flex-row items-center gap-6">
+        <!-- Large Origami Animal -->
+        <div class="flex flex-col items-center justify-center rounded-2xl border-2 border-amber-200 bg-gradient-to-b from-amber-100/50 to-white p-4 shadow-inner md:w-5/12">
+          <div id="modal-animal-svg-large" class="h-[180px] w-[180px] flex items-center justify-center"></div>
+          <div class="mt-2 text-center">
+            <span id="modal-animal-name" class="inline-block rounded-full bg-amber-200/80 px-3 py-1 text-xs font-bold text-amber-900">Origami Bunny</span>
+            <div id="modal-skill-badge" class="mt-1 text-[11px] font-semibold text-slate-500">Skill: Addition (+)</div>
+          </div>
+        </div>
+
+        <!-- Story & Question -->
+        <div class="flex-1 space-y-4">
+          <div class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 leading-relaxed text-slate-700 text-sm sm:text-base">
+            <p id="modal-story" class="font-medium"></p>
+          </div>
+
+          <div class="rounded-2xl border-2 border-amber-400 bg-white p-4 shadow-sm">
+            <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-amber-700">
+              <span>⭐</span> Math Challenge:
+            </div>
+            <div id="modal-question" class="mt-1 text-base sm:text-lg font-bold text-slate-900 leading-snug"></div>
+          </div>
+
+          <!-- Unlocked Form -->
+          <div id="form-unsolved-area">
+            <form onsubmit="submitAnswer(event)" class="space-y-3">
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <input
+                  type="number"
+                  id="user-answer-input"
+                  placeholder="Type number answer..."
+                  class="w-full rounded-2xl border-2 border-slate-300 bg-white px-4 py-3 text-lg font-bold text-slate-900 shadow-inner focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-200"
+                />
+                <button
+                  type="submit"
+                  class="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600 hover:to-amber-700 active:scale-95 whitespace-nowrap"
+                >
+                  <span>🔓</span> Unlock Hour!
+                </button>
+              </div>
+              <div id="modal-error" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-center text-xs font-bold text-rose-700"></div>
+            </form>
+          </div>
+
+          <!-- Solved Area -->
+          <div id="form-solved-area" class="hidden rounded-2xl border-2 border-emerald-400 bg-emerald-50 p-4 text-center">
+            <div class="text-2xl font-black text-emerald-800">🎉 Hour Unlocked!</div>
+            <p id="modal-solved-answer" class="mt-1 text-sm font-semibold text-emerald-700"></p>
+            <div class="mt-3 rounded-xl bg-white/80 p-3 text-left text-xs text-slate-700 border border-emerald-200">
+              <strong>Origami Fact:</strong> <span id="modal-fun-fact"></span>
+            </div>
+            <div class="mt-4 flex items-center justify-center gap-3">
+              <span id="countdown-text" class="text-xs font-bold text-emerald-700">Returning to clock in 2s...</span>
+              <button onclick="closeModal()" class="rounded-xl bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                Back to Clock &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grand Completion Modal -->
+  <div id="celebration-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
+    <div class="relative w-full max-w-3xl rounded-3xl border-4 border-amber-400 bg-gradient-to-b from-amber-50 via-white to-amber-100/90 p-6 sm:p-10 shadow-2xl text-center">
+      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-3xl shadow-lg ring-4 ring-amber-200">
+        🏆
+      </div>
+      <span class="mt-3 inline-block rounded-full bg-amber-200/90 px-4 py-1 text-xs font-black uppercase tracking-widest text-amber-900">
+        Digital Breakout Completed!
+      </span>
+      <h1 class="mt-2 text-2xl sm:text-4xl font-black text-slate-900">
+        MASTER ORIGAMI CLOCKMAKER!
+      </h1>
+      <p class="mx-auto mt-2 max-w-lg text-sm sm:text-base font-medium text-slate-600">
+        Congratulations! You solved all 12 math story challenges and unlocked every hour of the magical Origami Clock!
+      </p>
+
+      <div class="mx-auto mt-4 max-w-md">
+        <label class="block text-xs font-bold uppercase tracking-wider text-amber-800">
+          Personalize Your Award Certificate:
+        </label>
+        <input
+          type="text"
+          id="cert-name-input"
+          placeholder="Enter Your Name..."
+          class="mt-1 w-full rounded-2xl border-2 border-amber-300 bg-white px-4 py-2 text-center text-lg font-black text-amber-950 shadow-inner focus:border-amber-500 focus:outline-none"
+        />
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <button onclick="printPdfCertificate()" class="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 font-black text-white shadow-md hover:from-amber-600">
+          <span>🖨️</span> Print PDF Certificate
+        </button>
+        <button onclick="downloadPdfCertificate()" class="flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 font-bold text-white shadow-md hover:bg-emerald-700">
+          <span>📥</span> Save PDF
+        </button>
+        <button onclick="closeCelebration()" class="rounded-2xl border-2 border-slate-300 bg-white px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+          View Clock
+        </button>
+        <button onclick="resetBreakout()" class="rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 font-bold text-rose-700 hover:bg-rose-100">
+          ↺ Play Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Audio synthesizer
+    let soundEnabled = true;
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+    function playTick() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.04);
+      } catch (e) {}
+    }
+    function playCorrect() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.09);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.09 + 0.25);
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.09);
+          osc.stop(ctx.currentTime + i * 0.09 + 0.25);
+        });
+      } catch (e) {}
+    }
+    function playAnimalSound(hour) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        const t = ctx.currentTime;
+        switch (hour) {
+          case 1: // Bunny: double foot thump + soft chirp
+            [0, 0.16].forEach(d => {
+              const osc = ctx.createOscillator(); const g = ctx.createGain();
+              osc.type = 'sine'; osc.frequency.setValueAtTime(90, t + d);
+              osc.frequency.exponentialRampToValueAtTime(35, t + d + 0.09);
+              g.gain.setValueAtTime(0.35, t + d); g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.09);
+              osc.connect(g); g.connect(ctx.destination); osc.start(t + d); osc.stop(t + d + 0.09);
+            });
+            const bChirp = ctx.createOscillator(); const bG = ctx.createGain();
+            bChirp.type = 'triangle'; bChirp.frequency.setValueAtTime(880, t + 0.28);
+            bChirp.frequency.exponentialRampToValueAtTime(1320, t + 0.35);
+            bChirp.frequency.exponentialRampToValueAtTime(950, t + 0.42);
+            bG.gain.setValueAtTime(0.12, t + 0.28); bG.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+            bChirp.connect(bG); bG.connect(ctx.destination); bChirp.start(t + 0.28); bChirp.stop(t + 0.42);
+            break;
+          case 2: // Crane: resonant tracheal bugle call
+            const cr1 = ctx.createOscillator(); const cr2 = ctx.createOscillator();
+            const crF = ctx.createBiquadFilter(); const crG = ctx.createGain();
+            cr1.type = 'sawtooth'; cr2.type = 'sine';
+            crF.type = 'bandpass'; crF.frequency.setValueAtTime(950, t);
+            crF.frequency.linearRampToValueAtTime(1250, t + 0.15);
+            crF.frequency.linearRampToValueAtTime(780, t + 0.5); crF.Q.value = 4.0;
+            cr1.frequency.setValueAtTime(540, t); cr1.frequency.linearRampToValueAtTime(680, t + 0.12);
+            cr1.frequency.exponentialRampToValueAtTime(460, t + 0.5);
+            cr2.frequency.setValueAtTime(1080, t); cr2.frequency.linearRampToValueAtTime(1360, t + 0.12);
+            cr2.frequency.exponentialRampToValueAtTime(920, t + 0.5);
+            crG.gain.setValueAtTime(0.01, t); crG.gain.linearRampToValueAtTime(0.22, t + 0.08);
+            crG.gain.exponentialRampToValueAtTime(0.001, t + 0.52);
+            cr1.connect(crF); cr2.connect(crF); crF.connect(crG); crG.connect(ctx.destination);
+            cr1.start(t); cr2.start(t); cr1.stop(t + 0.52); cr2.stop(t + 0.52);
+            break;
+          case 3: // Frog: deep resonant vocal sac croak
+            [0, 0.22].forEach(delay => {
+              const osc = ctx.createOscillator(); const f = ctx.createBiquadFilter(); const g = ctx.createGain();
+              osc.type = 'sawtooth'; osc.frequency.setValueAtTime(115, t + delay);
+              osc.frequency.linearRampToValueAtTime(175, t + delay + 0.06);
+              osc.frequency.linearRampToValueAtTime(105, t + delay + 0.16);
+              f.type = 'bandpass'; f.frequency.setValueAtTime(450, t + delay); f.Q.value = 3.5;
+              g.gain.setValueAtTime(0.01, t + delay); g.gain.linearRampToValueAtTime(0.28, t + delay + 0.03);
+              g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.18);
+              osc.connect(f); f.connect(g); g.connect(ctx.destination);
+              osc.start(t + delay); osc.stop(t + delay + 0.18);
+            });
+            break;
+          case 4: // Fox: sharp yip & gekkering
+            [0, 0.12, 0.25].forEach((delay, i) => {
+              const osc = ctx.createOscillator(); const f = ctx.createBiquadFilter(); const g = ctx.createGain();
+              osc.type = 'sawtooth'; const base = 850 + i * 80;
+              osc.frequency.setValueAtTime(base, t + delay);
+              osc.frequency.exponentialRampToValueAtTime(base + 420, t + delay + 0.04);
+              osc.frequency.exponentialRampToValueAtTime(base - 150, t + delay + 0.09);
+              f.type = 'bandpass'; f.frequency.value = 1600; f.Q.value = 2.5;
+              g.gain.setValueAtTime(0.01, t + delay); g.gain.linearRampToValueAtTime(0.2, t + delay + 0.02);
+              g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.1);
+              osc.connect(f); f.connect(g); g.connect(ctx.destination);
+              osc.start(t + delay); osc.stop(t + delay + 0.1);
+            });
+            break;
+          case 5: // Butterfly: soft wingbeat flutter
+            for (let i = 0; i < 5; i++) {
+              const osc = ctx.createOscillator(); const f = ctx.createBiquadFilter(); const g = ctx.createGain();
+              osc.type = 'triangle'; osc.frequency.setValueAtTime(140 + (i % 2) * 30, t + i * 0.08);
+              osc.frequency.exponentialRampToValueAtTime(60, t + i * 0.08 + 0.06);
+              f.type = 'lowpass'; f.frequency.value = 400;
+              g.gain.setValueAtTime(0.12, t + i * 0.08); g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.06);
+              osc.connect(f); f.connect(g); g.connect(ctx.destination);
+              osc.start(t + i * 0.08); osc.stop(t + i * 0.08 + 0.06);
+            }
+            break;
+          case 6: // Turtle: aquatic ocean splash
+            [0, 0.09].forEach((delay, idx) => {
+              const osc = ctx.createOscillator(); const g = ctx.createGain();
+              osc.type = 'sine'; const startF = idx === 0 ? 320 : 540;
+              osc.frequency.setValueAtTime(startF, t + delay);
+              osc.frequency.exponentialRampToValueAtTime(startF * 2.2, t + delay + 0.05);
+              osc.frequency.exponentialRampToValueAtTime(200, t + delay + 0.12);
+              g.gain.setValueAtTime(0.24, t + delay); g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.12);
+              osc.connect(g); g.connect(ctx.destination); osc.start(t + delay); osc.stop(t + delay + 0.12);
+            });
+            break;
+          case 7: // Puppy: canine bark with acoustic throat resonance
+            [0, 0.18].forEach(delay => {
+              const osc = ctx.createOscillator(); const f = ctx.createBiquadFilter(); const g = ctx.createGain();
+              osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, t + delay);
+              osc.frequency.exponentialRampToValueAtTime(560, t + delay + 0.03);
+              osc.frequency.exponentialRampToValueAtTime(230, t + delay + 0.13);
+              f.type = 'bandpass'; f.frequency.setValueAtTime(750, t + delay); f.Q.value = 2.0;
+              g.gain.setValueAtTime(0.01, t + delay); g.gain.linearRampToValueAtTime(0.3, t + delay + 0.02);
+              g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
+              osc.connect(f); f.connect(g); g.connect(ctx.destination);
+              osc.start(t + delay); osc.stop(t + delay + 0.14);
+            });
+            break;
+          case 8: // Owl: Great Horned hollow hoot
+            const ow1 = ctx.createOscillator(); const og1 = ctx.createGain();
+            ow1.type = 'sine'; ow1.frequency.setValueAtTime(260, t);
+            ow1.frequency.linearRampToValueAtTime(290, t + 0.12); ow1.frequency.linearRampToValueAtTime(245, t + 0.28);
+            og1.gain.setValueAtTime(0.01, t); og1.gain.linearRampToValueAtTime(0.24, t + 0.08);
+            og1.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+            ow1.connect(og1); og1.connect(ctx.destination); ow1.start(t); ow1.stop(t + 0.3);
+            const ow2 = ctx.createOscillator(); const og2 = ctx.createGain();
+            ow2.type = 'sine'; ow2.frequency.setValueAtTime(245, t + 0.38);
+            ow2.frequency.linearRampToValueAtTime(275, t + 0.5); ow2.frequency.linearRampToValueAtTime(220, t + 0.75);
+            og2.gain.setValueAtTime(0.01, t + 0.38); og2.gain.linearRampToValueAtTime(0.24, t + 0.46);
+            og2.gain.exponentialRampToValueAtTime(0.001, t + 0.78);
+            ow2.connect(og2); og2.connect(ctx.destination); ow2.start(t + 0.38); ow2.stop(t + 0.78);
+            break;
+          case 9: // Koi: water gulp & ripples
+            [0, 0.08, 0.15].forEach((delay, idx) => {
+              const osc = ctx.createOscillator(); const g = ctx.createGain();
+              osc.type = 'sine'; const sf = 480 + idx * 120;
+              osc.frequency.setValueAtTime(sf, t + delay);
+              osc.frequency.exponentialRampToValueAtTime(sf * 1.8, t + delay + 0.04);
+              osc.frequency.exponentialRampToValueAtTime(220, t + delay + 0.08);
+              g.gain.setValueAtTime(0.18, t + delay); g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.08);
+              osc.connect(g); g.connect(ctx.destination); osc.start(t + delay); osc.stop(t + delay + 0.08);
+            });
+            break;
+          case 10: // Elephant: trunk trumpet flare
+            const elOsc = ctx.createOscillator(); const elF = ctx.createBiquadFilter(); const elG = ctx.createGain();
+            elOsc.type = 'sawtooth'; elOsc.frequency.setValueAtTime(260, t);
+            elOsc.frequency.linearRampToValueAtTime(460, t + 0.12); elOsc.frequency.linearRampToValueAtTime(420, t + 0.45);
+            elF.type = 'bandpass'; elF.frequency.setValueAtTime(650, t);
+            elF.frequency.linearRampToValueAtTime(1100, t + 0.15); elF.frequency.linearRampToValueAtTime(800, t + 0.45); elF.Q.value = 3.8;
+            elG.gain.setValueAtTime(0.01, t); elG.gain.linearRampToValueAtTime(0.32, t + 0.08);
+            elG.gain.exponentialRampToValueAtTime(0.001, t + 0.48);
+            elOsc.connect(elF); elF.connect(elG); elG.connect(ctx.destination);
+            elOsc.start(t); elOsc.stop(t + 0.48);
+            break;
+          case 11: // Cat: expressive formant-filtered meow
+            const catOsc = ctx.createOscillator(); const catF = ctx.createBiquadFilter(); const catG = ctx.createGain();
+            catOsc.type = 'triangle'; catOsc.frequency.setValueAtTime(420, t);
+            catOsc.frequency.linearRampToValueAtTime(680, t + 0.14); catOsc.frequency.linearRampToValueAtTime(350, t + 0.42);
+            catF.type = 'bandpass'; catF.frequency.setValueAtTime(800, t);
+            catF.frequency.linearRampToValueAtTime(1400, t + 0.14); catF.frequency.linearRampToValueAtTime(600, t + 0.42); catF.Q.value = 2.5;
+            catG.gain.setValueAtTime(0.01, t); catG.gain.linearRampToValueAtTime(0.24, t + 0.06);
+            catG.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+            catOsc.connect(catF); catF.connect(catG); catG.connect(ctx.destination);
+            catOsc.start(t); catOsc.stop(t + 0.45);
+            break;
+          case 12: // Dragon: deep 65Hz rumble & flame breath
+            const drOsc = ctx.createOscillator(); const drF = ctx.createBiquadFilter(); const drG = ctx.createGain();
+            drOsc.type = 'sawtooth'; drOsc.frequency.setValueAtTime(65, t);
+            drOsc.frequency.exponentialRampToValueAtTime(180, t + 0.2); drOsc.frequency.exponentialRampToValueAtTime(50, t + 0.6);
+            drF.type = 'lowpass'; drF.frequency.setValueAtTime(350, t);
+            drF.frequency.linearRampToValueAtTime(900, t + 0.2); drF.frequency.linearRampToValueAtTime(250, t + 0.6);
+            drG.gain.setValueAtTime(0.01, t); drG.gain.linearRampToValueAtTime(0.35, t + 0.1);
+            drG.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+            drOsc.connect(drF); drF.connect(drG); drG.connect(ctx.destination);
+            drOsc.start(t); drOsc.stop(t + 0.65);
+            break;
+        }
+      } catch (e) {}
+    }
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    // High-Fidelity Master Origami SVG Registry (Full geometry with inner folds, eyes, highlights, and crease marks)
+    const ORIGAMI_SVG_MAP = {
+      bunny: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="40,15 24,58 54,58" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="39,22 30,52 46,52" fill="#fbcfe8"/>
+        <polygon points="80,10 66,58 96,58" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="80,18 72,52 88,52" fill="#fbcfe8"/>
+        <polygon points="60,48 20,78 60,108" fill="#f9a8d4" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,48 100,78 60,108" fill="#f472b6" stroke="#db2777" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,48 60,108 60,84" fill="#ec4899"/>
+        <polygon points="20,78 8,92 34,98" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="100,78 112,92 86,98" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="60,82 53,90 67,90" fill="#be185d"/>
+        <circle cx="44" cy="72" r="4" fill="#1e1e1e"/>
+        <circle cx="76" cy="72" r="4" fill="#1e1e1e"/>
+        <circle cx="45.5" cy="70.5" r="1.5" fill="#ffffff"/>
+        <circle cx="77.5" cy="70.5" r="1.5" fill="#ffffff"/>
+        <line x1="60" y1="48" x2="60" y2="108" stroke="#be185d" stroke-width="1.5" stroke-dasharray="3,2"/>
+      </svg>`,
+      crane: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="60,48 5,28 44,74" fill="#ef4444" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="5,28 24,58 44,74" fill="#b91c1c"/>
+        <polygon points="60,48 115,22 76,74" fill="#f87171" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="115,22 96,54 76,74" fill="#ef4444"/>
+        <polygon points="60,48 44,74 60,96" fill="#dc2626" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,48 76,74 60,96" fill="#ef4444" stroke="#991b1b" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,96 50,118 60,110" fill="#991b1b" stroke="#7f1d1d" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="60,96 70,118 60,110" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="60,48 52,20 58,12 62,22" fill="#fca5a5" stroke="#991b1b" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="58,12 44,16 54,20" fill="#b91c1c"/>
+        <line x1="60" y1="48" x2="60" y2="96" stroke="#ffe4e6" stroke-width="1.2" stroke-dasharray="2,2"/>
+      </svg>`,
+      frog: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="20,78 4,104 36,94" fill="#15803d" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="100,78 116,104 84,94" fill="#16a34a" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,28 18,74 60,106" fill="#4ade80" stroke="#15803d" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,28 102,74 60,106" fill="#22c55e" stroke="#15803d" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="30,74 16,84 38,82" fill="#86efac" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="90,74 104,84 82,82" fill="#4ade80" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="42" cy="38" r="8" fill="#bbf7d0" stroke="#15803d" stroke-width="1.5"/>
+        <circle cx="78" cy="38" r="8" fill="#bbf7d0" stroke="#15803d" stroke-width="1.5"/>
+        <circle cx="43" cy="38" r="4.5" fill="#0f172a"/>
+        <circle cx="77" cy="38" r="4.5" fill="#0f172a"/>
+        <circle cx="45" cy="36" r="1.5" fill="#ffffff"/>
+        <circle cx="79" cy="36" r="1.5" fill="#ffffff"/>
+        <line x1="60" y1="28" x2="60" y2="106" stroke="#14532d" stroke-width="1.5" stroke-dasharray="3,2"/>
+      </svg>`,
+      fox: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="30,12 14,58 50,48" fill="#ea580c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="28,22 18,50 42,44" fill="#1e1e1e"/>
+        <polygon points="90,12 70,48 106,58" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="92,22 78,44 102,50" fill="#1e1e1e"/>
+        <polygon points="60,38 28,54 60,74" fill="#fb923c" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="60,38 92,54 60,74" fill="#f97316" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="28,54 8,76 60,110" fill="#fed7aa" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="92,54 112,76 60,110" fill="#ffffff" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,74 52,94 60,110" fill="#ffedd5"/>
+        <polygon points="60,74 68,94 60,110" fill="#fed7aa"/>
+        <polygon points="60,105 54,112 66,112" fill="#1e293b"/>
+        <polygon points="38,66 48,70 40,74" fill="#0f172a"/>
+        <polygon points="82,66 72,70 80,74" fill="#0f172a"/>
+        <circle cx="45" cy="69" r="0.9" fill="#ffffff"/>
+        <circle cx="75" cy="69" r="0.9" fill="#ffffff"/>
+      </svg>`,
+      butterfly: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="60,58 8,18 38,54" fill="#c084fc" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="8,18 28,8 44,34" fill="#e9d5ff" stroke="#6b21a8" stroke-width="1.5"/>
+        <polygon points="60,58 112,18 82,54" fill="#a855f7" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="112,18 92,8 76,34" fill="#d8b4fe" stroke="#6b21a8" stroke-width="1.5"/>
+        <polygon points="60,64 18,96 48,84" fill="#9333ea" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="18,96 34,110 54,90" fill="#a855f7"/>
+        <polygon points="60,64 102,96 72,84" fill="#7e22ce" stroke="#6b21a8" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="102,96 86,110 66,90" fill="#9333ea"/>
+        <polygon points="60,34 56,86 64,86" fill="#3b0764"/>
+        <line x1="58" y1="34" x2="46" y2="14" stroke="#3b0764" stroke-width="2"/>
+        <line x1="62" y1="34" x2="74" y2="14" stroke="#3b0764" stroke-width="2"/>
+        <circle cx="46" cy="14" r="2.5" fill="#d8b4fe"/>
+        <circle cx="74" cy="14" r="2.5" fill="#d8b4fe"/>
+      </svg>`,
+      turtle: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="34,44 8,24 28,64" fill="#0d9488" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="86,44 112,24 92,64" fill="#14b8a6" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="34,78 14,98 38,94" fill="#0f766e" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="86,78 106,98 82,94" fill="#0d9488" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="60,14 48,36 72,36" fill="#5eead4" stroke="#115e59" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="52" cy="24" r="2.2" fill="#042f2e"/>
+        <circle cx="68" cy="24" r="2.2" fill="#042f2e"/>
+        <circle cx="53" cy="23.5" r="0.7" fill="#ffffff"/>
+        <circle cx="69" cy="23.5" r="0.7" fill="#ffffff"/>
+        <polygon points="60,34 28,54 38,84 60,96 82,84 92,54" fill="#2dd4bf" stroke="#115e59" stroke-width="2.5" stroke-linejoin="round"/>
+        <polygon points="60,34 60,96 92,54" fill="#14b8a6" stroke="#115e59" stroke-width="1.5"/>
+        <polygon points="60,48 44,64 60,80 76,64" fill="#99f6e4" stroke="#115e59" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>`,
+      puppy: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="34,34 8,76 38,64" fill="#ca8a04" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="86,34 112,76 82,64" fill="#eab308" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,24 28,44 60,84" fill="#fde047" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,24 92,44 60,84" fill="#facc15" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="28,44 24,80 60,106" fill="#fef08a" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="92,44 96,80 60,106" fill="#fde047" stroke="#854d0e" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="55,92 65,92 60,106" fill="#f43f5e"/>
+        <polygon points="60,78 52,86 68,86" fill="#1e1e1e"/>
+        <circle cx="44" cy="56" r="4.5" fill="#1c1917"/>
+        <circle cx="76" cy="56" r="4.5" fill="#1c1917"/>
+        <circle cx="46" cy="54" r="1.6" fill="#ffffff"/>
+        <circle cx="78" cy="54" r="1.6" fill="#ffffff"/>
+      </svg>`,
+      owl: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="40,18 28,44 50,44" fill="#4338ca" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="80,18 70,44 92,44" fill="#6366f1" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,34 24,58 34,106 60,116" fill="#818cf8" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,34 96,58 86,106 60,116" fill="#6366f1" stroke="#312e81" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="45" cy="54" r="14" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/>
+        <circle cx="75" cy="54" r="14" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/>
+        <circle cx="45" cy="54" r="7" fill="#0f172a"/>
+        <circle cx="75" cy="54" r="7" fill="#0f172a"/>
+        <circle cx="47" cy="52" r="2.5" fill="#ffffff"/>
+        <circle cx="77" cy="52" r="2.5" fill="#ffffff"/>
+        <polygon points="60,64 54,76 66,76" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+        <polygon points="60,80 48,94 60,104" fill="#c7d2fe"/>
+        <polygon points="60,80 72,94 60,104" fill="#a5b4fc"/>
+      </svg>`,
+      koi: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="18,102 4,116 34,106" fill="#ea580c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="18,102 14,82 34,96" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="96,28 48,44 28,96 60,80" fill="#fb923c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="96,28 76,64 28,96 60,80" fill="#f97316" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="74,34 58,14 48,38" fill="#ffedd5" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="96,28 112,38 86,54" fill="#ea580c" stroke="#9a3412" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="96" cy="38" r="3.2" fill="#0f172a"/>
+        <circle cx="97" cy="37" r="1.1" fill="#ffffff"/>
+        <polygon points="64,48 48,58 60,68" fill="#ffffff"/>
+        <polygon points="80,44 70,54 78,58" fill="#fdba74"/>
+      </svg>`,
+      elephant: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="40,32 4,42 24,84 50,74" fill="#94a3b8" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="80,32 116,42 96,84 70,74" fill="#cbd5e1" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,22 34,48 60,78" fill="#94a3b8" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,22 86,48 60,78" fill="#64748b" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="54,74 50,98 62,112 66,108 58,94 66,74" fill="#475569" stroke="#334155" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="46,76 38,90 48,84" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
+        <polygon points="74,76 82,90 72,84" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
+        <circle cx="45" cy="46" r="3.2" fill="#0f172a"/>
+        <circle cx="75" cy="46" r="3.2" fill="#0f172a"/>
+        <circle cx="46" cy="45" r="1" fill="#ffffff"/>
+        <circle cx="76" cy="45" r="1" fill="#ffffff"/>
+      </svg>`,
+      cat: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="24,12 14,54 50,44" fill="#fb923c" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="26,22 20,48 42,40" fill="#fed7aa"/>
+        <polygon points="96,12 70,44 106,54" fill="#f97316" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="94,22 78,40 100,48" fill="#fed7aa"/>
+        <polygon points="60,34 24,54 60,84" fill="#ffedd5" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,34 96,54 60,84" fill="#fed7aa" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="24,54 14,84 60,106" fill="#fdba74" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="96,54 106,84 60,106" fill="#fb923c" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,78 54,85 66,85" fill="#f43f5e"/>
+        <line x1="28" y1="80" x2="8" y2="78" stroke="#9a3412" stroke-width="1.5"/>
+        <line x1="28" y1="86" x2="10" y2="90" stroke="#9a3412" stroke-width="1.5"/>
+        <line x1="92" y1="80" x2="112" y2="78" stroke="#9a3412" stroke-width="1.5"/>
+        <line x1="92" y1="86" x2="110" y2="90" stroke="#9a3412" stroke-width="1.5"/>
+        <polygon points="34,60 48,56 46,68" fill="#10b981" stroke="#047857" stroke-width="1" stroke-linejoin="round"/>
+        <polygon points="86,60 72,56 74,68" fill="#10b981" stroke="#047857" stroke-width="1" stroke-linejoin="round"/>
+        <line x1="41" y1="57" x2="41" y2="67" stroke="#064e3b" stroke-width="2.2"/>
+        <line x1="79" y1="57" x2="79" y2="67" stroke="#064e3b" stroke-width="2.2"/>
+        <circle cx="43" cy="58" r="0.8" fill="#ffffff"/>
+        <circle cx="81" cy="58" r="0.8" fill="#ffffff"/>
+      </svg>`,
+      dragon: `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <polygon points="30,8 18,38 45,34" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="90,8 75,34 102,38" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="48,44 4,28 34,74" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="72,44 116,28 86,74" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,22 34,48 60,78" fill="#fbbf24" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,22 86,48 60,78" fill="#f59e0b" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,68 38,94 60,110" fill="#d97706" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="60,68 82,94 60,110" fill="#b45309" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/>
+        <polygon points="42,50 54,56 44,60" fill="#ef4444"/>
+        <polygon points="78,50 66,56 76,60" fill="#ef4444"/>
+        <circle cx="47" cy="53" r="0.8" fill="#fef08a"/>
+        <circle cx="73" cy="53" r="0.8" fill="#fef08a"/>
+        <path d="M 60,110 Q 48,118 58,126 Q 72,118 60,110" fill="#f97316"/>
+      </svg>`,
+    };
+
+    // 12 Origami Hours Data (Beginner Edition - Addition & Subtraction Only)
+    const ORIGAMI_HOURS = [
+      {
+        hour: 1, timeString: "1:00", animalName: "Origami Bunny", characterName: "Barnaby the Bunny",
+        mathSkill: "Addition (+)",
+        story: "Barnaby the origami bunny is preparing snacks for his hopping meadow picnic! In the sunny morning, he folded 24 tiny paper carrots. In the afternoon, he folded 38 more paper carrots to share with his best friends.",
+        mathQuestion: "How many paper carrots did Barnaby fold in all for the picnic?",
+        correctAnswer: 62,
+        funFact: "Real bunnies can jump up to 3 feet high, and origami bunnies symbolize cleverness and good luck!",
+        svg: ORIGAMI_SVG_MAP.bunny
+      },
+      {
+        hour: 2, timeString: "2:00", animalName: "Origami Crane", characterName: "Kira the Peace Crane",
+        mathSkill: "Addition (+)",
+        story: "Kira the elegant paper crane is crafting colorful garlands to hang in the school garden. In the morning, she folded 35 silver paper cranes. In the afternoon, she folded 29 golden paper cranes to complete the garland.",
+        mathQuestion: "How many paper cranes did Kira fold altogether for the school garden garland?",
+        correctAnswer: 64,
+        funFact: "In Japanese tradition, folding 1,000 cranes (Senbazuru) is believed to grant a special wish of peace!",
+        svg: ORIGAMI_SVG_MAP.crane
+      },
+      {
+        hour: 3, timeString: "3:00", animalName: "Origami Jumping Frog", characterName: "Jumpy the Frog",
+        mathSkill: "Subtraction (−)",
+        story: "Jumpy is a bouncy paper frog hopping along a 54-lily-pad trail across the peaceful pond. Jumpy has already hopped across 28 lily pads toward his cozy log home.",
+        mathQuestion: "How many lily pads does Jumpy have left to hop to reach his cozy log home?",
+        correctAnswer: 26,
+        funFact: "Origami jumping frogs have spring-pleat folds on their backs that launch them into the air!",
+        svg: ORIGAMI_SVG_MAP.frog
+      },
+      {
+        hour: 4, timeString: "4:00", animalName: "Origami Fox", characterName: "Rusty the Clever Fox",
+        mathSkill: "Addition (+)",
+        story: "Rusty the woodland origami fox is getting ready for a cozy autumn celebration. He collected 47 golden acorns and 36 red maple leaves to decorate his paper tree den.",
+        mathQuestion: "How many forest treasures (acorns and leaves) did Rusty collect in total?",
+        correctAnswer: 83,
+        funFact: "Origami foxes (Kitsune) represent wisdom and sharp thinking!",
+        svg: ORIGAMI_SVG_MAP.fox
+      },
+      {
+        hour: 5, timeString: "5:00", animalName: "Origami Butterfly", characterName: "Bella the Butterfly",
+        mathSkill: "Subtraction (−)",
+        story: "Bella the delicate origami butterfly flew across a sunny garden filled with 85 freshly bloomed flowers. So far today, she has already visited and sprinkled sparkling pollen on 37 flowers.",
+        mathQuestion: "How many flowers does Bella have left to visit in the garden?",
+        correctAnswer: 48,
+        funFact: "Origami butterflies (Chocho) are one of the oldest recorded paper fold designs in history!",
+        svg: ORIGAMI_SVG_MAP.butterfly
+      },
+      {
+        hour: 6, timeString: "6:00", animalName: "Origami Sea Turtle", characterName: "Shelly the Turtle",
+        mathSkill: "Subtraction (−)",
+        story: "Shelly the origami sea turtle was swimming along the coral reef with 64 shiny sea glass gems in her pouch. She shared 27 gems with her sea turtle friends to decorate their shell nests.",
+        mathQuestion: "How many shiny sea glass gems does Shelly have left in her pouch?",
+        correctAnswer: 37,
+        funFact: "Sea turtles have swam Earth's oceans for over 100 million years!",
+        svg: ORIGAMI_SVG_MAP.turtle
+      },
+      {
+        hour: 7, timeString: "7:00", animalName: "Origami Puppy", characterName: "Pip the Pup",
+        mathSkill: "Two-Step (+ and −)",
+        story: "Pip the origami puppy had 72 colorful paper chew bones in his yard. He hid 28 bones beneath the grass. Later that afternoon, his puppy pal gave him 15 brand-new squeaky paper bones.",
+        mathQuestion: "How many paper bones does Pip have in his yard now?",
+        correctAnswer: 59,
+        funFact: "Folding puppy ears takes just two diagonal folds down on a triangle!",
+        svg: ORIGAMI_SVG_MAP.puppy
+      },
+      {
+        hour: 8, timeString: "8:00", animalName: "Origami Wise Owl", characterName: "Professor Hoot",
+        mathSkill: "Addition (+)",
+        story: "Professor Hoot the origami owl loves stargazing from his tall pine tree perch. Tonight, he counted 48 twinkling stars in the northern sky and 37 shimmering stars in the southern sky.",
+        mathQuestion: "How many stars did Professor Hoot count in total in the night sky?",
+        correctAnswer: 85,
+        funFact: "Owls can swivel their heads 270 degrees because they have 14 neck vertebrae!",
+        svg: ORIGAMI_SVG_MAP.owl
+      },
+      {
+        hour: 9, timeString: "9:00", animalName: "Origami Koi Fish", characterName: "Finn the Koi",
+        mathSkill: "Subtraction (−)",
+        story: "Finn the shimmering koi fish is swimming in a serene water garden with 76 colorful origami koi fish. At sunset, 39 of the koi swam down to rest among the cool water reeds.",
+        mathQuestion: "How many origami koi fish were still swimming near the pond surface?",
+        correctAnswer: 37,
+        funFact: "In legend, koi that leaped the dragon falls transformed into celestial dragons!",
+        svg: ORIGAMI_SVG_MAP.koi
+      },
+      {
+        hour: 10, timeString: "10:00", animalName: "Origami Elephant", characterName: "Ella the Elephant",
+        mathSkill: "Addition (+)",
+        story: "Ella the origami elephant is helping fill water troughs for the jungle sanctuary. On her first morning trip, she carried 145 liters of cool water. On her second afternoon trip, she carried 138 liters of water.",
+        mathQuestion: "How many liters of water did Ella carry in total across both trips?",
+        correctAnswer: 283,
+        funFact: "An elephant's trunk has over 40,000 muscles and can lift over 600 pounds!",
+        svg: ORIGAMI_SVG_MAP.elephant
+      },
+      {
+        hour: 11, timeString: "11:00", animalName: "Origami Kitten", characterName: "Mochi the Cat",
+        mathSkill: "Addition (+)",
+        story: "Mochi the origami kitten discovered a playful craft room! In the big closet, there were 58 soft red yarn balls. On the rug, there were 36 soft blue yarn balls.",
+        mathQuestion: "How many soft paper yarn balls does Mochi have to play with in total?",
+        correctAnswer: 94,
+        funFact: "Origami cat folds are designed to stand up on all four tiny paper paws!",
+        svg: ORIGAMI_SVG_MAP.cat
+      },
+      {
+        hour: 12, timeString: "12:00", animalName: "Origami Golden Dragon", characterName: "Ignis the Grand Dragon",
+        mathSkill: "Two-Step Finale (+ and −)",
+        story: "Ignis the majestic origami dragon is putting on the grand clock tower finale show! He started with 95 glowing paper festival lanterns. First, he released 38 lanterns into the night sky. Then, he released 29 more lanterns for the midnight fireworks display.",
+        mathQuestion: "How many glowing paper lanterns does Ignis have left to light for the final stroke of midnight?",
+        correctAnswer: 28,
+        funFact: "The origami dragon is a world-famous master-level fold with pleated wings and horns!",
+        svg: ORIGAMI_SVG_MAP.dragon
+      }
+    ];
+
+    let unlockedHours = new Set();
+    let currentHour = null;
+    let countdownTimer = null;
+
+    // Load saved
+    try {
+      const saved = localStorage.getItem('origami_clock_html_v1');
+      if (saved) JSON.parse(saved).forEach(h => unlockedHours.add(h));
+    } catch (e) {}
+
+    function saveState() {
+      try {
+        localStorage.setItem('origami_clock_html_v1', JSON.stringify(Array.from(unlockedHours)));
+      } catch (e) {}
+    }
+
+    function renderDialTicks() {
+      const svg = document.getElementById('dial-svg');
+      let str = '';
+      for (let i = 0; i < 60; i++) {
+        const rad = (i * 6 * Math.PI) / 180;
+        const isMajor = i % 5 === 0;
+        const r1 = isMajor ? 248 : 255;
+        const r2 = 262;
+        const x1 = 270 + r1 * Math.cos(rad);
+        const y1 = 270 + r1 * Math.sin(rad);
+        const x2 = 270 + r2 * Math.cos(rad);
+        const y2 = 270 + r2 * Math.sin(rad);
+        str += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${isMajor ? '#b45309' : '#d97706'}" stroke-width="${isMajor ? 3 : 1.5}" opacity="${isMajor ? 0.8 : 0.4}"/>`;
+      }
+      str += `<circle cx="270" cy="270" r="175" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6,4" opacity="0.6"/>`;
+      svg.innerHTML = str;
+    }
+
+    function renderClock() {
+      const container = document.getElementById('clock-hours-container');
+      container.innerHTML = '';
+
+      ORIGAMI_HOURS.forEach(h => {
+        const isUnlocked = unlockedHours.has(h.hour);
+        const angleDeg = h.hour * 30 - 90;
+        const angleRad = (angleDeg * Math.PI) / 180;
+        const radiusPct = 39.5;
+        const xPct = 50 + radiusPct * Math.cos(angleRad);
+        const yPct = 50 + radiusPct * Math.sin(angleRad);
+
+        const node = document.createElement('div');
+        node.className = 'absolute -translate-x-1/2 -translate-y-1/2 z-20';
+        node.style.left = `${xPct}%`;
+        node.style.top = `${yPct}%`;
+
+        node.innerHTML = `
+          <button onclick="openHourModal(${h.hour})" onmouseenter="playTick(); pointHands(${h.hour})"
+            class="group relative flex flex-col items-center justify-center rounded-2xl p-1 sm:p-2 transition-all duration-300 focus:outline-none ${
+              isUnlocked
+                ? 'bg-white/95 ring-4 ring-emerald-400 shadow-md scale-100 hover:scale-110'
+                : 'bg-white/85 hover:bg-white ring-2 ring-amber-200 hover:ring-amber-400 shadow-md hover:scale-105'
+            }"
+            style="width: clamp(58px, 14vw, 86px); height: clamp(58px, 14vw, 86px);">
+            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-black shadow-sm ${
+              isUnlocked ? 'bg-emerald-600 text-white ring-2 ring-emerald-200' : 'bg-amber-600 text-white'
+            }">${h.timeString}</span>
+            <div class="relative mt-1 flex items-center justify-center w-[38px] h-[38px] sm:w-[46px] sm:h-[46px]">
+              ${h.svg}
+            </div>
+            <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full ${
+              isUnlocked ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-200'
+            } px-1.5 text-[9px] font-bold border shadow-xs whitespace-nowrap">
+              ${isUnlocked ? '★ Unlocked' : '🔒 Lock ' + h.hour}
+            </span>
+          </button>
+        `;
+        container.appendChild(node);
+      });
+
+      // Update counters
+      const count = unlockedHours.size;
+      document.getElementById('status-counter').innerText = `${count} / 12`;
+      document.getElementById('progress-bar').style.width = `${Math.round((count / 12) * 100)}%`;
+
+      if (count === 12) {
+        document.getElementById('celebration-modal').classList.remove('hidden');
+      }
+    }
+
+    function pointHands(hour) {
+      document.getElementById('hour-hand').style.transform = `rotate(${hour * 30}deg)`;
+    }
+
+    function openHourModal(hour) {
+      playTick();
+      currentHour = hour;
+      const data = ORIGAMI_HOURS.find(h => h.hour === hour);
+      pointHands(hour);
+
+      // Play animal sound once when section opens
+      playAnimalSound(hour);
+
+      document.getElementById('modal-hour-badge').innerText = data.hour;
+      document.getElementById('modal-time-label').innerText = `${data.timeString} O'Clock Mission`;
+      document.getElementById('modal-character-name').innerText = data.characterName;
+      document.getElementById('modal-animal-svg-large').innerHTML = data.svg;
+      document.getElementById('modal-animal-name').innerText = data.animalName;
+      document.getElementById('modal-skill-badge').innerText = `Skill: ${data.mathSkill}`;
+      document.getElementById('modal-story').innerText = data.story;
+      document.getElementById('modal-question').innerText = data.mathQuestion;
+      document.getElementById('modal-fun-fact').innerText = data.funFact;
+      document.getElementById('user-answer-input').value = '';
+      document.getElementById('modal-error').classList.add('hidden');
+
+      const isUnlocked = unlockedHours.has(hour);
+      if (isUnlocked) {
+        document.getElementById('form-unsolved-area').classList.add('hidden');
+        document.getElementById('form-solved-area').classList.remove('hidden');
+        document.getElementById('modal-solved-answer').innerText = `Answer: ${data.correctAnswer} — Great job!`;
+        document.getElementById('countdown-text').classList.add('hidden');
+      } else {
+        document.getElementById('form-unsolved-area').classList.remove('hidden');
+        document.getElementById('form-solved-area').classList.add('hidden');
+        document.getElementById('countdown-text').classList.remove('hidden');
+      }
+
+      document.getElementById('hour-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      playTick();
+      if (countdownTimer) clearInterval(countdownTimer);
+      document.getElementById('hour-modal').classList.add('hidden');
+    }
+
+    function submitAnswer(e) {
+      e.preventDefault();
+      const input = document.getElementById('user-answer-input').value.trim();
+      const num = parseInt(input, 10);
+      const data = ORIGAMI_HOURS.find(h => h.hour === currentHour);
+
+      if (isNaN(num)) {
+        showError('Please type a number for your answer!');
+        return;
+      }
+
+      if (num === data.correctAnswer) {
+        playCorrect();
+        // Play animal sound once when unlocked
+        setTimeout(() => playAnimalSound(currentHour), 280);
+
+        unlockedHours.add(currentHour);
+        saveState();
+        renderClock();
+
+        document.getElementById('form-unsolved-area').classList.add('hidden');
+        document.getElementById('form-solved-area').classList.remove('hidden');
+        document.getElementById('modal-solved-answer').innerText = `Answer: ${data.correctAnswer} — Fantastic work!`;
+
+        let seconds = 2;
+        document.getElementById('countdown-text').innerText = `Returning to clock in ${seconds}s...`;
+        if (countdownTimer) clearInterval(countdownTimer);
+        countdownTimer = setInterval(() => {
+          seconds--;
+          if (seconds <= 0) {
+            clearInterval(countdownTimer);
+            closeModal();
+          } else {
+            document.getElementById('countdown-text').innerText = `Returning to clock in ${seconds}s...`;
+          }
+        }, 1000);
+      } else {
+        showError('Not quite! Check your math and try again. You can do it! 💪');
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('modal-error');
+      el.innerText = msg;
+      el.classList.remove('hidden');
+    }
+
+    function closeCelebration() {
+      document.getElementById('celebration-modal').classList.add('hidden');
+    }
+
+    function resetBreakout() {
+      playTick();
+      unlockedHours.clear();
+      try {
+        localStorage.removeItem('origami_clock_html_v1');
+      } catch (e) {}
+      closeCelebration();
+      closeModal();
+      renderClock();
+    }
+
+    function renderClockCanvasDataUrl() {
+      const size = 640;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return '';
+
+      const cx = size / 2;
+      const cy = size / 2;
+      const rOuter = size * 0.46;
+
+      // Bezel
+      ctx.beginPath();
+      ctx.arc(cx, cy, rOuter, 0, Math.PI * 2);
+      const bezelGrad = ctx.createLinearGradient(0, 0, size, size);
+      bezelGrad.addColorStop(0, '#f59e0b');
+      bezelGrad.addColorStop(0.5, '#d97706');
+      bezelGrad.addColorStop(1, '#92400e');
+      ctx.fillStyle = bezelGrad;
+      ctx.fill();
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = '#78350f';
+      ctx.stroke();
+
+      // Parchment Dial
+      ctx.beginPath();
+      ctx.arc(cx, cy, rOuter - 14, 0, Math.PI * 2);
+      const dialGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, rOuter - 14);
+      dialGrad.addColorStop(0, '#fffbeb');
+      dialGrad.addColorStop(0.7, '#fef3c7');
+      dialGrad.addColorStop(1, '#fde68a');
+      ctx.fillStyle = dialGrad;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#d97706';
+      ctx.stroke();
+
+      // 60 minute ticks
+      for (let i = 0; i < 60; i++) {
+        const angle = (i * 6 * Math.PI) / 180;
+        const isMajor = i % 5 === 0;
+        const r1 = rOuter - (isMajor ? 32 : 24);
+        const r2 = rOuter - 16;
+        ctx.beginPath();
+        ctx.moveTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+        ctx.lineTo(cx + r2 * Math.cos(angle), cy + r2 * Math.sin(angle));
+        ctx.strokeStyle = isMajor ? '#92400e' : '#d97706';
+        ctx.lineWidth = isMajor ? 3.5 : 1.5;
+        ctx.stroke();
+      }
+
+      // Inner dashed ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, rOuter * 0.58, 0, Math.PI * 2);
+      ctx.setLineDash([8, 6]);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 12 Origami Hour Badges
+      const nodeRadius = rOuter * 0.72;
+      ORIGAMI_HOURS.forEach(h => {
+        const rad = ((h.hour * 30 - 90) * Math.PI) / 180;
+        const nx = cx + nodeRadius * Math.cos(rad);
+        const ny = cy + nodeRadius * Math.sin(rad);
+        const badgeR = 28;
+
+        ctx.beginPath();
+        ctx.arc(nx, ny, badgeR, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#10b981';
+        ctx.stroke();
+
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(nx - 16, ny - badgeR - 6, 32, 13, 5);
+        else ctx.rect(nx - 16, ny - badgeR - 6, 32, 13);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${h.hour}:00`, nx, ny - badgeR + 1);
+
+        ctx.fillStyle = '#059669';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText('★', nx, ny - 2);
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillStyle = '#1e293b';
+        ctx.fillText(h.animalName.replace('Origami ', ''), nx, ny + 10);
+      });
+
+      // Clock hands pointing to 12
+      ctx.beginPath();
+      ctx.moveTo(cx - 4, cy + 15);
+      ctx.lineTo(cx, cy - rOuter * 0.48);
+      ctx.lineTo(cx + 4, cy + 15);
+      ctx.fillStyle = '#78350f';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx - 2.5, cy + 20);
+      ctx.lineTo(cx, cy - rOuter * 0.72);
+      ctx.lineTo(cx + 2.5, cy + 20);
+      ctx.fillStyle = '#b45309';
+      ctx.fill();
+
+      // Hub
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#78350f';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#78350f';
+      ctx.fill();
+
+      return canvas.toDataURL('image/png');
+    }
+
+    function createCertificateDoc() {
+      const studentName = (document.getElementById('cert-name-input').value || '').trim() || 'Master Math Clockmaker';
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const width = 297, height = 210;
+
+      // Soft Cream Background
+      doc.setFillColor(255, 253, 245);
+      doc.rect(0, 0, width, height, 'F');
+
+      // Double Gold Outer Borders
+      doc.setDrawColor(217, 119, 6);
+      doc.setLineWidth(2.5);
+      doc.rect(10, 10, width - 20, height - 20);
+
+      doc.setDrawColor(245, 158, 11);
+      doc.setLineWidth(0.8);
+      doc.rect(13, 13, width - 26, height - 26);
+
+      // Top Header Title (both circles deleted)
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(28);
+      doc.setTextColor(120, 53, 15);
+      doc.text('CERTIFICATE OF ACHIEVEMENT', width / 2, 28, { align: 'center' });
+
+      // Subheading: Beginner Edition
+      doc.setFontSize(14);
+      doc.setTextColor(180, 83, 9);
+      doc.text('Origami Math Clock Master • Beginner Edition', width / 2, 36, { align: 'center' });
+
+      // Recipient Presentation
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(100, 116, 139);
+      doc.text('This official honor is proudly presented to:', width / 2, 45, { align: 'center' });
+
+      // Recipient Name
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(24);
+      doc.setTextColor(15, 23, 42);
+      doc.text(studentName, width / 2, 57, { align: 'center' });
+
+      const nameW = doc.getTextWidth(studentName) + 20;
+      doc.setDrawColor(217, 119, 6);
+      doc.setLineWidth(0.8);
+      doc.line(width / 2 - nameW / 2, 60, width / 2 + nameW / 2, 60);
+
+      // Description
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10.5);
+      doc.setTextColor(51, 65, 85);
+      doc.text('For demonstrating outstanding mathematical problem-solving skills by successfully unlocking all 12 Origami Animal Clock Hours across Addition and Subtraction.', width / 2, 70, { align: 'center', maxWidth: 220 });
+
+      // CENTERPIECE: Real Original Origami Animal Clock Image (circles & table removed)
+      try {
+        const clockImgData = renderClockCanvasDataUrl();
+        if (clockImgData) {
+          const clockSize = 88;
+          const clockX = (width - clockSize) / 2;
+          const clockY = 82;
+          doc.addImage(clockImgData, 'PNG', clockX, clockY, clockSize, clockSize);
+        }
+      } catch (err) {}
+
+      // Bottom Signature & Date Section (both circles removed)
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      // Left Date line
+      doc.setDrawColor(148, 163, 184);
+      doc.setLineWidth(0.6);
+      doc.line(40, 185, 95, 185);
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Date Awarded', 67.5, 190, { align: 'center' });
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 23, 42);
+      doc.text(dateStr, 67.5, 182, { align: 'center' });
+
+      // Right Signature line
+      doc.line(width - 95, 185, width - 40, 185);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Origami Math Instructor', width - 67.5, 190, { align: 'center' });
+      doc.setFont('times', 'italic');
+      doc.setFontSize(14);
+      doc.setTextColor(15, 23, 42);
+      doc.text('/s/ Master Clockmaker', width - 67.5, 182, { align: 'center' });
+
+      return doc;
+    }
+
+    function printPdfCertificate() {
+      const doc = createCertificateDoc();
+      const blob = doc.output('blob');
+      const blobUrl = URL.createObjectURL(blob);
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.src = blobUrl;
+      document.body.appendChild(iframe);
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.focus();
+          iframe.contentWindow.print();
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+            URL.revokeObjectURL(blobUrl);
+          }, 2000);
+        }, 200);
+      };
+    }
+
+    function downloadPdfCertificate() {
+      const doc = createCertificateDoc();
+      const name = (document.getElementById('cert-name-input').value || '').trim() || 'Student';
+      doc.save(`Origami_Clock_Master_Certificate_${name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
+    }
+
+    // Init
+    renderDialTicks();
+    renderClock();
+  </script>
+</body>
+</html>
